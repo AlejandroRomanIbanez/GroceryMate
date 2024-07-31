@@ -4,20 +4,21 @@ from app import mongo
 
 def register_user(data):
     username = data.username
+    email = data.email
     password = generate_password_hash(data.password)
 
     if mongo.db.users.find_one({'username': username}):
         return {'error': 'Username already exists'}, 400
 
-    mongo.db.users.insert_one({'username': username, 'password': password, 'basket': [], 'fav_products': []})
+    mongo.db.users.insert_one({'email': email, 'username': username, 'password': password, 'basket': [], 'fav_products': []})
     return {'message': 'User registered successfully'}, 201
 
 
 def login_user(data):
-    username = data.username
+    email = data.email
     password = data.password
 
-    user = mongo.db.users.find_one({'username': username})
+    user = mongo.db.users.find_one({'email': email})
     if not user or not check_password_hash(user['password'], password):
         return {'error': 'Invalid username or password'}, 401
 

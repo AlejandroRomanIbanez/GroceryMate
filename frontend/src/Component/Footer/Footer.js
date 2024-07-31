@@ -15,7 +15,6 @@ import vector10 from "../Assets/Vector10.png";
 import vector11 from "../Assets/Vector11.png";
 import { FaFacebookF, FaTiktok } from 'react-icons/fa';
 import { BsInstagram, BsTwitter } from 'react-icons/bs';
-import { MdArrowForwardIos } from 'react-icons/md';
 import { Fade } from 'react-reveal';
 
 const Footer = () => {

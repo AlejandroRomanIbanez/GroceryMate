@@ -6,6 +6,18 @@
     background: #f0f0f0;
   }
   
+.home-link {
+    display: block;
+    margin-top: 10px;
+    color: #003366;
+    text-decoration: none;
+  }
+  
+.home-link:hover {
+    text-decoration: underline;
+    color: #66ccff;
+}
+
   .auth-container {
     display: flex;
     width: 90%;
@@ -87,6 +99,22 @@
   .switch-link:hover {
     text-decoration: underline;
     color: #66ccff;
+  }
+
+  .logout-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    margin-top: 20px;
+  }
+  
+  .logout-btn:hover {
+    background-color: #0056b3;
   }
   
   @media (max-width: 768px) {

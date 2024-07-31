@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Auth.css';
 import logo from '../Assets/Frame2.png';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsAuthenticated(!!token);
+  }, []);
 
   const handleSwitch = () => {
     setIsLogin(!isLogin);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
   };
 
   return (
@@ -22,7 +36,14 @@ const Auth = () => {
               />
               <h4 className="header-title">We are MarketMate</h4>
             </div>
-            {isLogin ? <LoginForm handleSwitch={handleSwitch} /> : <RegisterForm handleSwitch={handleSwitch} />}
+            {isAuthenticated ? (
+              <>
+                <button onClick={handleLogout} className="logout-btn">Logout</button>
+                <a href="#!" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="home-link">Go to Home</a>
+              </>
+            ) : (
+              isLogin ? <LoginForm handleSwitch={handleSwitch} /> : <RegisterForm handleSwitch={handleSwitch} />
+            )}
           </div>
         </div>
         <div className="auth-info">
@@ -34,23 +55,61 @@ const Auth = () => {
   );
 };
 
-const LoginForm = ({ handleSwitch }) => (
-  <form className="form">
-    <input type="email" placeholder="Email address" className="form-input" required />
-    <input type="password" placeholder="Password" className="form-input" required />
-    <button type="submit" className="submit-btn">Sign In</button>
-    <a href="#!" onClick={(e) => { e.preventDefault(); handleSwitch(); }} className="switch-link">Create a new account</a>
-  </form>
-);
+const LoginForm = ({ handleSwitch }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-const RegisterForm = ({ handleSwitch }) => (
-  <form className="form">
-    <input type="text" placeholder="Full Name" className="form-input" required />
-    <input type="email" placeholder="Email address" className="form-input" required />
-    <input type="password" placeholder="Password" className="form-input" required />
-    <button type="submit" className="submit-btn">Sign Up</button>
-    <a href="#!" onClick={(e) => { e.preventDefault(); handleSwitch(); }} className="switch-link">Already have an account? Login</a>
-  </form>
-);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER}/api/auth/login`, { email, password });
+      console.log(response.data);
+      localStorage.setItem('token', response.data.access_token);
+      window.location.href = '/';
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <input type="email" placeholder="Email address" className="form-input" required value={email} onChange={(e) => setEmail(e.target.value)} />
+      <input type="password" placeholder="Password" className="form-input" required value={password} onChange={(e) => setPassword(e.target.value)} />
+      <button type="submit" className="submit-btn">Sign In</button>
+      <a href="#!" onClick={(e) => { e.preventDefault(); handleSwitch(); }} className="switch-link">Create a new account</a>
+      <a href="#!" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="home-link">Go to Home</a>
+    </form>
+  );
+};
+
+const RegisterForm = ({ handleSwitch }) => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER}/api/auth/register`, { username: name, email, password });
+      console.log(response.data);
+      handleSwitch();
+    } catch (error) {
+      console.error(error.response.data);
+    }
+  };
+
+  return (
+    <form className="form" onSubmit={handleSubmit}>
+      <input type="text" placeholder="Full Name" className="form-input" required value={name} onChange={(e) => setName(e.target.value)} />
+      <input type="email" placeholder="Email address" className="form-input" required value={email} onChange={(e) => setEmail(e.target.value)} />
+      <input type="password" placeholder="Password" className="form-input" required value={password} onChange={(e) => setPassword(e.target.value)} />
+      <button type="submit" className="submit-btn">Sign Up</button>
+      <a href="#!" onClick={(e) => { e.preventDefault(); handleSwitch(); }} className="switch-link">Already have an account? Login</a>
+      <a href="#!" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="home-link">Go to Home</a>
+    </form>
+  );
+};
 
 export default Auth;
