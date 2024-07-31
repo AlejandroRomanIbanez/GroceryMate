@@ -1,0 +1,45 @@
+/* ProductHeader.css */
+header {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    flex-wrap: nowrap; /* Ensure content stays on one line */
+}
+
+header strong {
+    display: block;
+    padding: 0.5rem 0;
+}
+
+header .ms-auto {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap; /* Ensure content stays on one line */
+}
+
+header .form-select {
+    display: inline-block;
+    width: auto;
+    border: 1px solid #ccc;
+    padding-top: 0.25rem;
+    margin-right: 0.5rem;
+    min-width: 150px; /* Minimum width to prevent wrapping */
+}
+
+header .btn-group {
+    display: flex;
+    border: 1px solid #ccc;
+}
+
+header .btn {
+    background-color: #fff;
+    border: none;
+}
+
+header .btn i {
+    font-size: 1.25rem;
+}
+
