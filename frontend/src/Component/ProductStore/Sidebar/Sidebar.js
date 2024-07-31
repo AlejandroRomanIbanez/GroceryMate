@@ -1,12 +1,17 @@
 import React from 'react';
 import './Sidebar.css';
+import filterIcon from '../../Assets/filter_price.png';
+import categoryIcon from '../../Assets/category.png'; 
 
 const Sidebar = () => {
   return (
     <div className="sidebar-container">
       <div className="shop-sidebar mt-65">
         <div className="widget widget-menu">
-          <h4 className="widget-title"><i className="flaticon-leaf-1"></i>Category</h4>
+          <h4 className="widget-title">
+            <img src={categoryIcon} alt="Category Icon" className="widget-icon" />
+            Category
+          </h4>
           <ul>
             <li><a href="#">Organic Fruits</a> <span>(8)</span></li>
             <li><a href="#">Fresh Vegetables</a> <span>(5)</span></li>
@@ -18,7 +23,10 @@ const Sidebar = () => {
         </div>
 
         <div className="widget widget-menu">
-          <h4 className="widget-title"><i className="flaticon-leaf-1"></i>Filter By Pricing</h4>
+          <h4 className="widget-title">
+            <img src={filterIcon} alt="Filter Icon" className="widget-icon" />
+            Filter By Pricing
+          </h4>
           <ul>
             <li><a href="#">$05 - $10</a> <span>(159)</span></li>
             <li><a href="#">$12 - $25</a> <span>(240)</span></li>

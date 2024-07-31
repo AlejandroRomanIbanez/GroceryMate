@@ -4,13 +4,13 @@ import ProductHeader from '../ProductStore/ProductHeader/ProductHeader';
 import Sidebar from './Sidebar/Sidebar';
 import './ProductStore.css';
 
-const ProductStore = () => {
+const ProductStore = ({ isFav }) => {
   return (
     <div className="product-store-container">
       <Sidebar />
       <div className="main-content">
         <ProductHeader />
-        <ProductGrid />
+        <ProductGrid isFav={isFav} />
       </div>
     </div>
   );

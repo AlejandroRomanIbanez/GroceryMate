@@ -9,6 +9,7 @@ import ProductStore from './Component/ProductStore/ProductStore';
 import Header from './Component/Header/Header';
 import Navbar from './Component/Navbar/Navbar';
 import Footer from './Component/Footer/Footer';
+import Checkout from './Component/Checkout/Checkout';
 
 
 
@@ -27,7 +28,9 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path='/store' element={<ProductStore />} />
+        <Route path='/store' element={<ProductStore isFav={false}/>} />
+        <Route path='/store/favs' element={<ProductStore isFav={true} />} />
+        <Route path='/checkout' element={<Checkout/>} />
       </Routes>
       {!hideHeaderRoutes.includes(location.pathname) && <Footer />}
     </>

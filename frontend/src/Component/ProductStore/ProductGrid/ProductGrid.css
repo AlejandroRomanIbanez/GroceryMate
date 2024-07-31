@@ -152,7 +152,7 @@
 .btn-outline-dark {
     background-color: transparent;
     color: #343a40;
-    border: 1px solid #343a40;
+    border: 1px solid #66ccff;
     cursor: pointer;
     height: 40px;
     display: flex;
@@ -161,7 +161,7 @@
 }
 
 .btn-outline-dark:hover {
-    background-color: #343a40;
+    background-color: #66ccff;
     color: white;
 }
 

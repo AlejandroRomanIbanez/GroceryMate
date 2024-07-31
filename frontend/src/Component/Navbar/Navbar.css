@@ -1,12 +1,28 @@
 .navbar-container {
     width: 100%;
     height: 58px;
-    background-color: #A6C8EB;
+    background: linear-gradient(90deg, #1A5DA1, #00ccff, #2575FC, #1e7fc0);
+    background-size: 400% 400%; /* Create a shifting effect */
+    animation: gradientAnimation 15s ease infinite; /* Animate the gradient */
     margin-top: 8px;
     padding: 0 20px;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative; /* Add position relative to manage z-index of child elements */
+    z-index: 11; /* Ensure the navbar stays on top */
+}
+
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .navbar-sub-container {
@@ -21,7 +37,7 @@
     display: none;
     align-items: center;
     cursor: pointer;
-    z-index: 2; /* Ensure the burger menu stays on top */
+    z-index: 9999; /* Ensure the burger menu stays on top */
     position: absolute;
     left: 20px; /* Align to the left */
 }
@@ -31,7 +47,7 @@
     gap: 20px;
     font-size: 20px;
     font-weight: 600;
-    color: #1A5DA1;
+    color: #ffffff;
 }
 
 .anim-nav a {
@@ -50,8 +66,8 @@
     right: 15%;
     top: 0;
     bottom: 0;
-    border-left: 3px solid #1A5DA1;
-    border-right: 3px solid #1A5DA1;
+    border-left: 3px solid #ffffff;
+    border-right: 3px solid #ffffff;
 }
 
 .anim-nav a:hover,
@@ -117,7 +133,7 @@
         position: absolute;
         top: 58px; /* Position below the navbar */
         left: 20px; /* Align to the left */
-        z-index: 1; /* Ensure the menu stays on top */
+        z-index: 9998; /* Ensure the menu stays on top */
     }
 
     .mobile-menu ul {
@@ -167,7 +183,7 @@
         position: absolute;
         top: 58px; /* Position below the navbar */
         left: 20px; /* Align to the left */
-        z-index: 1; /* Ensure the menu stays on top */
+        z-index: 9998; /* Ensure the menu stays on top */
     }
 
     .mobile-menu ul {
