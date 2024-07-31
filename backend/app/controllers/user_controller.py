@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.services.user_service import add_to_favorites, get_user_favorites, remove_from_favorites, sync_basket_service, get_user_basket
+from app.services.user_service import add_to_favorites, get_user_favorites, remove_from_favorites, sync_basket_service, get_user_basket, remove_from_basket_service
 
 
 @jwt_required()
@@ -45,3 +45,12 @@ def get_basket():
     user_id = get_jwt_identity()
     basket = get_user_basket(user_id)
     return jsonify([item for item in basket]), 200
+
+
+@jwt_required()
+def remove_from_basket():
+    user_id = get_jwt_identity()
+    product_id = request.json.get("product_id")
+
+    result = remove_from_basket_service(user_id, product_id)
+    return jsonify(result), 200

@@ -11,6 +11,7 @@ import Navbar from './Component/Navbar/Navbar';
 import Footer from './Component/Footer/Footer';
 import Checkout from './Component/Checkout/Checkout';
 import axios from 'axios';
+import ProtectedRoute from './Component/ProtectedRoute';
 
 
 
@@ -29,9 +30,23 @@ const AppContent = ({ products, isFav, basket, setBasket }) => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path='/store' element={<ProductStore products={products} isFav={false} basket={basket} setBasket={setBasket} />} />
-        <Route path='/store/favs' element={<ProductStore products={products} isFav={true} basket={basket} setBasket={setBasket}  />} />
-        <Route path='/checkout' element={<Checkout/>} basket={basket} setBasket={setBasket} />
+        <Route path="/store" element={<ProductStore products={products} isFav={false} basket={basket} setBasket={setBasket} />} />
+        <Route
+          path="/store/favs"
+          element={
+            <ProtectedRoute>
+              <ProductStore products={products} isFav={true} basket={basket} setBasket={setBasket} />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout products={products} basket={basket} setBasket={setBasket} />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
       {!hideHeaderRoutes.includes(location.pathname) && <Footer />}
     </>
@@ -67,6 +82,7 @@ function App() {
     };
 
     fetchProducts();
+    fetchBasket();
     AOS.init();
     AOS.refresh();
   }, []);

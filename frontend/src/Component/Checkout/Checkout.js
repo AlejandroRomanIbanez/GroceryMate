@@ -1,47 +1,76 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Checkout.css";
+import axios from 'axios';
 
-const products = [
-  {
-    id: 1,
-    name: "Samsung Galaxy M11 64GB",
-    color: "white",
-    price: 799,
-    image: "https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/13.webp",
-    quantity: 1,
-  },
-  {
-    id: 2,
-    name: "Headphones Bose 35 II",
-    color: "red",
-    price: 239,
-    image: "https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/6.webp",
-    quantity: 1,
-  },
-  {
-    id: 3,
-    name: "iPad 9.7 6-gen WiFi 32GB",
-    color: "rose pink",
-    price: 659,
-    image: "https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/1.webp",
-    quantity: 2,
-  },
-];
+export default function Checkout({ products, basket, setBasket }) {
+  const [productQuantities, setProductQuantities] = useState({});
 
-export default function Checkout() {
-  const [productQuantities, setProductQuantities] = useState(
-    products.reduce((acc, product) => {
-      acc[product.id] = product.quantity;
+  useEffect(() => {
+    setProductQuantities(basket.reduce((acc, item) => {
+      acc[item.product_id] = item.quantity;
       return acc;
-    }, {})
-  );
+    }, {}));
+  }, [basket]);
 
-  const handleQuantityChange = (productId, delta) => {
-    setProductQuantities((prevQuantities) => {
-      const newQuantities = { ...prevQuantities };
-      newQuantities[productId] = Math.max(0, newQuantities[productId] + delta);
-      return newQuantities;
-    });
+  const handleQuantityChange = async (productId, delta) => {
+    const newQuantities = { ...productQuantities };
+    newQuantities[productId] = Math.max(0, (newQuantities[productId] || 0) + delta);
+
+    if (newQuantities[productId] === 0) {
+      handleRemoveFromCart(productId);
+    } else {
+      setProductQuantities(newQuantities);
+
+      const updatedProductIndex = basket.findIndex(item => item.product_id === productId);
+      if (updatedProductIndex === -1) return;
+
+      const updatedProduct = { ...basket[updatedProductIndex] };
+      updatedProduct.quantity = newQuantities[productId];
+
+      const newBasket = [...basket];
+      newBasket[updatedProductIndex] = updatedProduct;
+
+      setBasket(newBasket);
+
+      try {
+        const token = localStorage.getItem('token');
+        await axios.post(
+          `${process.env.REACT_APP_BACKEND_SERVER}/api/me/basket`,
+          newBasket,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+      } catch (error) {
+        console.error('Failed to update basket:', error);
+      }
+    }
+  };
+
+  const handleRemoveFromCart = async (productId) => {
+    const newBasket = basket.filter(item => item.product_id !== productId);
+    setBasket(newBasket);
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_SERVER}/api/me/basket`,
+        newBasket,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Failed to remove from basket:', error);
+    }
+  };
+
+  const getProductDetails = (productId) => {
+    return products.find(product => product._id === productId) || {};
   };
 
   return (
@@ -53,48 +82,50 @@ export default function Checkout() {
               Your products
             </h3>
 
-            {products.map((product) => (
-              <div key={product.id} className="d-flex align-items-center mb-5">
-                <div className="checkout-card-image-container">
-                  <img
-                    src={product.image}
-                    className="checkout-card-image"
-                    alt="Product"
-                  />
-                  <a href="#!" className="remove-icon">
-                    &times;
-                  </a>
-                </div>
-                <div className="flex-grow-1 ms-3">
-                  <h5 className="checkout-product-title">{product.name}</h5>
-                  <h6 className="checkout-product-color">Color: {product.color}</h6>
-                  <div className="d-flex align-items-center">
-                    <p className="checkout-price">{product.price}€</p>
-                    <div className="checkout-quantity">
-                      <button
-                        className="minus"
-                        onClick={() => handleQuantityChange(product.id, -1)}
-                      >
-                        -
-                      </button>
-                      <input
-                        className="quantity-input"
-                        min={0}
-                        value={productQuantities[product.id]}
-                        readOnly
-                        type="number"
-                      />
-                      <button
-                        className="plus"
-                        onClick={() => handleQuantityChange(product.id, 1)}
-                      >
-                        +
-                      </button>
+            {basket.map((item) => {
+              const product = getProductDetails(item.product_id);
+              return (
+                <div key={item.product_id} className="d-flex align-items-center mb-5">
+                  <div className="checkout-card-image-container">
+                    <img
+                      src={product.imageUrl}
+                      className="checkout-card-image"
+                      alt="Product"
+                    />
+                    <a href="#!" className="remove-icon" onClick={() => handleRemoveFromCart(item.product_id)}>
+                      &times;
+                    </a>
+                  </div>
+                  <div className="flex-grow-1 ms-3">
+                    <h5 className="checkout-product-title">{product.name}</h5>
+                    <div className="d-flex align-items-center">
+                      <p className="checkout-price">{product.price}€</p>
+                      <div className="checkout-quantity">
+                        <button
+                          className="minus"
+                          onClick={() => handleQuantityChange(item.product_id, -1)}
+                        >
+                          -
+                        </button>
+                        <input
+                          className="quantity-input"
+                          min={0}
+                          value={productQuantities[item.product_id] || 0}
+                          readOnly
+                          type="number"
+                        />
+                        <button
+                          className="plus"
+                          onClick={() => handleQuantityChange(item.product_id, 1)}
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
 
             <hr
               className="mb-4"
@@ -111,7 +142,12 @@ export default function Checkout() {
             </div>
             <div className="total-container">
               <h5 className="fw-bold mb-0">Total:</h5>
-              <h5 className="fw-bold mb-0">2261€</h5>
+              <h5 className="fw-bold mb-0">
+                {basket.reduce((acc, item) => {
+                  const product = getProductDetails(item.product_id);
+                  return acc + product.price * (productQuantities[item.product_id] || 0);
+                }, 0) + 10}€
+              </h5>
             </div>
           </div>
         </div>

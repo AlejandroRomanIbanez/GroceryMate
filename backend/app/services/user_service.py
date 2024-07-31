@@ -53,3 +53,16 @@ def get_user_basket(user_id: str) -> List[Dict]:
         return user['basket']
 
     return []
+
+
+def remove_from_basket_service(user_id: str, product_id: str) -> dict:
+    users_collection = mongo.db.users
+    result = users_collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$pull": {"basket": {"product_id": product_id}}}
+    )
+    if result.modified_count > 0:
+        return {"message": "Product removed from basket."}
+    else:
+        return {"message": "Product not found in the basket."}
+

@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './ProductGrid.css';
 import Pagination from '../ProductPagination/ProductPagination';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const ProductGrid = ({ products, isFav, basket, setBasket }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [favProductIds, setFavProductIds] = useState([]);
   const [quantities, setQuantities] = useState({});
+  const navigate = useNavigate();
 
   const productsPerPage = 4;
   const totalPages = Math.ceil(products.length / productsPerPage);
@@ -15,6 +17,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket }) => {
     const fetchFavorites = async () => {
       try {
         const token = localStorage.getItem('token');
+        if (!token) return;
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -29,6 +32,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket }) => {
     const fetchBasket = async () => {
       try {
         const token = localStorage.getItem('token');
+        if (!token) return;
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/basket`, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -49,22 +53,47 @@ const ProductGrid = ({ products, isFav, basket, setBasket }) => {
   };
 
   const handleAddToFavorites = async (productId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`,
-        { product_id: productId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/auth');
+      return;
+    }
+    if (favProductIds.includes(productId)) {
+      // Remove from favorites
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites/remove`,
+          { product_id: productId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
           }
+        );
+        if (response.status === 200) {
+          setFavProductIds(favProductIds.filter(id => id !== productId));
         }
-      );
-      if (response.status === 201) {
-        setFavProductIds([...favProductIds, productId]);
+      } catch (error) {
+        console.error('Failed to remove from favorites:', error);
       }
-    } catch (error) {
-      console.error('Failed to add to favorites:', error);
+    } else {
+      // Add to favorites
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`,
+          { product_id: productId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
+        );
+        if (response.status === 201) {
+          setFavProductIds([...favProductIds, productId]);
+        }
+      } catch (error) {
+        console.error('Failed to add to favorites:', error);
+      }
     }
   };
 
@@ -76,6 +105,11 @@ const ProductGrid = ({ products, isFav, basket, setBasket }) => {
   };
 
   const handleAddToCart = async (product) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/auth');
+      return;
+    }
     const quantity = quantities[product._id] || 1;
     const newBasket = [...basket];
     const productIndex = newBasket.findIndex(item => item.product_id === product._id);
@@ -87,7 +121,6 @@ const ProductGrid = ({ products, isFav, basket, setBasket }) => {
     setBasket(newBasket);
 
     try {
-      const token = localStorage.getItem('token');
       await axios.post(
         `${process.env.REACT_APP_BACKEND_SERVER}/api/me/basket`,
         newBasket,
