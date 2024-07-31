@@ -114,7 +114,7 @@ const ProductGrid = ({ products, isFav }) => {
   const productsPerPage = 4;
   const totalPages = Math.ceil(products.length / productsPerPage);
 
-  const filteredProducts = isFav ? products.filter(product => product.isFavorite) : products;
+  const filteredProducts = isFav ? products.filter(product => product.is_fav) : products;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -143,7 +143,7 @@ const ProductGrid = ({ products, isFav }) => {
                   </p>
                 </div>
                 <div className="content">
-                  <h5 className="discount-price">{product.discountPrice}</h5>
+                  <h5 className="discount-price">{product.price}€</h5>
                 </div>
                 <div className="button-area">
                   <div className="row">

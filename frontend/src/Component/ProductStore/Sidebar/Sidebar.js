@@ -1,9 +1,9 @@
 import React from 'react';
 import './Sidebar.css';
 import filterIcon from '../../Assets/filter_price.png';
-import categoryIcon from '../../Assets/category.png'; 
+import categoryIcon from '../../Assets/category.png';
 
-const Sidebar = () => {
+const Sidebar = ({ categories, priceRanges, filterByCategory, filterByPriceRange }) => {
   return (
     <div className="sidebar-container">
       <div className="shop-sidebar mt-65">
@@ -13,12 +13,14 @@ const Sidebar = () => {
             Category
           </h4>
           <ul>
-            <li><a href="#">Organic Fruits</a> <span>(8)</span></li>
-            <li><a href="#">Fresh Vegetables</a> <span>(5)</span></li>
-            <li><a href="#">Crisp Bread & Cake</a> <span>(3)</span></li>
-            <li><a href="#">Sea Foods</a> <span>(9)</span></li>
-            <li><a href="#">Chicken Eggs</a> <span>(4)</span></li>
-            <li><a href="#">Milk & Meat</a> <span>(6)</span></li>
+            <li>
+              <a href="#" onClick={() => filterByCategory(null)}>All</a> <span>({categories.reduce((acc, [_, count]) => acc + count, 0)})</span>
+            </li>
+            {categories.map(([category, count], index) => (
+              <li key={index}>
+                <a href="#" onClick={() => filterByCategory(category)}>{category}</a> <span>({count})</span>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -28,12 +30,11 @@ const Sidebar = () => {
             Filter By Pricing
           </h4>
           <ul>
-            <li><a href="#">$05 - $10</a> <span>(159)</span></li>
-            <li><a href="#">$12 - $25</a> <span>(240)</span></li>
-            <li><a href="#">$50 - $100</a> <span>(183)</span></li>
-            <li><a href="#">$120 - $300</a> <span>(324)</span></li>
-            <li><a href="#">$500 - $1000</a> <span>(95)</span></li>
-            <li><a href="#">$1050 - $1500</a> <span>(289)</span></li>
+            {priceRanges.map(([range, count], index) => (
+              <li key={index}>
+                <a href="#" onClick={() => filterByPriceRange(range)}>{range}</a> <span>({count})</span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

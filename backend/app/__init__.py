@@ -3,6 +3,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
+from datetime import timedelta
 import os
 
 load_dotenv()
@@ -16,6 +17,7 @@ def create_app():
     CORS(app)
 
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=4)
     jwt = JWTManager(app)
 
     from .routes.auth_routes import auth_bp
