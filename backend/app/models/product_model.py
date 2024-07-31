@@ -27,6 +27,7 @@ class ProductModel(BaseModel):
     price: float = Field(..., gt=0, description="Price of the product, must be greater than 0")
     category: ProductCategory = Field(..., description="Category of the product")
     image_url: HttpUrl = Field(..., description="URL of the product image")
+    is_fav: bool = Field(default=False, description="Indicates if the product is favorite")
     is_alcohol: bool = Field(default=False, description="Indicates if the product is alcoholic")
 
     def to_dict(self) -> Dict:

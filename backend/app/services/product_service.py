@@ -4,14 +4,9 @@ from typing import List, Dict
 from ..helpers import serialize_object_id
 
 
-def get_products(query: Dict = None, sort_by: str = None, order: int = 1) -> List[Dict]:
+def get_all_products() -> List[Dict]:
     products_collection = mongo.db.products
-    products = products_collection.find(query)
-
-    if sort_by:
-        products = products.sort(sort_by, order)
-
-    products = list(products)
+    products = list(products_collection.find())
     return [serialize_object_id(product) for product in products]
 
 

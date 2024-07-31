@@ -7,7 +7,7 @@ import { BsHeart, BsCart2 } from 'react-icons/bs';
 import Search from '../Search/Search';
 import { useNavigate } from 'react-router-dom';
 
-const Header = () => {
+const Header = ( {products }) => {
 
     const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ const Header = () => {
             <div className="logo-search-cont">
                 <img src={logo} alt="Logo" />
                 <div className="search-cont">
-                    <Search />
+                    <Search products={products} />
                 </div>
             </div>
             <div className="contact-social-cont">

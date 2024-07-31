@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './ProductGrid.css';
 import Pagination from '../ProductPagination/ProductPagination';
 
-const products = [
+{/*const products = [
   {
     id: 1,
     title: "Apple",
@@ -107,9 +107,9 @@ const products = [
     rating: 5,
     isFavorite: false,
   },
-];
+];*/}
 
-const ProductGrid = ({ isFav }) => {
+const ProductGrid = ({ products, isFav }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 4;
   const totalPages = Math.ceil(products.length / productsPerPage);
