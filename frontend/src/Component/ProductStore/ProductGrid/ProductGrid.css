@@ -160,9 +160,10 @@
     justify-content: center;
 }
 
-.btn-outline-dark:hover {
-    background-color: #66ccff;
-    color: white;
+.btn-outline-dark:hover,
+.btn-favorite {
+  background-color: #66ccff;
+  color: white;
 }
 
 /* Responsive Grid Layout */

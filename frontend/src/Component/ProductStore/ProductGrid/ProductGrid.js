@@ -1,134 +1,116 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './ProductGrid.css';
 import Pagination from '../ProductPagination/ProductPagination';
+import axios from 'axios';
 
-{/*const products = [
-  {
-    id: 1,
-    title: "Apple",
-    quantity: 'x4',
-    imageUrl: 'https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/4.webp',
-    category: 'Fruits',
-    originalPrice: '$5',
-    discountPrice: '$4',
-    name: 'Apple',
-    availability: 10,
-    rating: 5,
-    isFavorite: true,
-  },
-  {
-    id: 2,
-    title: "Banana",
-    quantity: 'x6',
-    imageUrl: 'https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/7.webp',
-    category: 'Fruits',
-    originalPrice: '$6',
-    discountPrice: '$5',
-    name: 'Banana',
-    availability: 15,
-    rating: 4,
-    isFavorite: false,
-  },
-  {
-    id: 3,
-    title: "Carrot",
-    quantity: 'x5',
-    imageUrl: 'https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/5.webp',
-    category: 'Vegetables',
-    originalPrice: '$4',
-    discountPrice: '$3',
-    name: 'Carrot',
-    availability: 20,
-    rating: 4.5,
-    isFavorite: true,
-  },
-  {
-    id: 4,
-    title: "Broccoli",
-    quantity: 'x3',
-    imageUrl: 'https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/4.webp',
-    category: 'Vegetables',
-    originalPrice: '$7',
-    discountPrice: '$6',
-    name: 'Broccoli',
-    availability: 12,
-    rating: 5,
-    isFavorite: false,
-  },
-  {
-    id: 5,
-    title: "Chicken Breast",
-    quantity: 'x2',
-    imageUrl: 'https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/4.webp',
-    category: 'Meat',
-    originalPrice: '$10',
-    discountPrice: '$9',
-    name: 'Chicken Breast',
-    availability: 8,
-    rating: 5,
-    isFavorite: true,
-  },
-  {
-    id: 6,
-    title: "Salmon",
-    quantity: 'x1',
-    imageUrl: 'https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/7.webp',
-    category: 'Seafood',
-    originalPrice: '$12',
-    discountPrice: '$11',
-    name: 'Salmon',
-    availability: 5,
-    rating: 4,
-    isFavorite: false,
-  },
-  {
-    id: 7,
-    title: "Milk",
-    quantity: 'x4',
-    imageUrl: 'https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/5.webp',
-    category: 'Dairy',
-    originalPrice: '$8',
-    discountPrice: '$7',
-    name: 'Milk',
-    availability: 10,
-    rating: 4.5,
-    isFavorite: true,
-  },
-  {
-    id: 8,
-    title: "Eggs",
-    quantity: 'x12',
-    imageUrl: 'https://mdbcdn.b-cdn.net/img/Photos/Horizontal/E-commerce/Products/4.webp',
-    category: 'Dairy',
-    originalPrice: '$4',
-    discountPrice: '$3',
-    name: 'Eggs',
-    availability: 20,
-    rating: 5,
-    isFavorite: false,
-  },
-];*/}
-
-const ProductGrid = ({ products, isFav }) => {
+const ProductGrid = ({ products, isFav, basket, setBasket }) => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [favProductIds, setFavProductIds] = useState([]);
+  const [quantities, setQuantities] = useState({});
+
   const productsPerPage = 4;
   const totalPages = Math.ceil(products.length / productsPerPage);
 
-  const filteredProducts = isFav ? products.filter(product => product.is_fav) : products;
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setFavProductIds(response.data.map(product => product._id));
+      } catch (error) {
+        console.error('Failed to fetch favorites:', error);
+      }
+    };
+
+    const fetchBasket = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/basket`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setBasket(response.data);
+      } catch (error) {
+        console.error('Failed to fetch basket:', error);
+      }
+    };
+
+    fetchFavorites();
+    fetchBasket();
+  }, [setBasket]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
+  const handleAddToFavorites = async (productId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(
+        `${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`,
+        { product_id: productId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      if (response.status === 201) {
+        setFavProductIds([...favProductIds, productId]);
+      }
+    } catch (error) {
+      console.error('Failed to add to favorites:', error);
+    }
+  };
+
+  const handleQuantityChange = (productId, quantity) => {
+    setQuantities({
+      ...quantities,
+      [productId]: quantity,
+    });
+  };
+
+  const handleAddToCart = async (product) => {
+    const quantity = quantities[product._id] || 1;
+    const newBasket = [...basket];
+    const productIndex = newBasket.findIndex(item => item.product_id === product._id);
+    if (productIndex > -1) {
+      newBasket[productIndex].quantity += quantity;
+    } else {
+      newBasket.push({ product_id: product._id, quantity });
+    }
+    setBasket(newBasket);
+
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_SERVER}/api/me/basket`,
+        newBasket,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Failed to update basket:', error);
+    }
+  };
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
   return (
     <div className="container">
       <div className="product-grid">
         {currentProducts.map(product => (
-          <div className="product-card" key={product.id}>
+          <div className="product-card" key={product._id}>
             <div className="card">
               <div className="card-header">
                 <p className="lead">{product.title}</p>
@@ -148,15 +130,28 @@ const ProductGrid = ({ products, isFav }) => {
                 <div className="button-area">
                   <div className="row">
                     <div className="col-3">
-                      <input type="number" name="quantity" className="quantity" defaultValue="1" />
+                      <input
+                        type="number"
+                        name={`quantity_${product._id}`}
+                        className="quantity"
+                        value={quantities[product._id] || 1}
+                        min="1"
+                        onChange={(e) => handleQuantityChange(product._id, parseInt(e.target.value))}
+                      />
                     </div>
                     <div className="col-7">
-                      <button className="btn btn-primary btn-cart">
+                      <button
+                        className="btn btn-primary btn-cart"
+                        onClick={() => handleAddToCart(product)}
+                      >
                         Add to Cart
                       </button>
                     </div>
                     <div className="col-1">
-                      <button className="btn btn-outline-dark">
+                      <button
+                        className={`btn btn-outline-dark ${favProductIds.includes(product._id) ? 'btn-favorite' : ''}`}
+                        onClick={() => handleAddToFavorites(product._id)}
+                      >
                         ❤
                       </button>
                     </div>
@@ -167,7 +162,7 @@ const ProductGrid = ({ products, isFav }) => {
           </div>
         ))}
       </div>
-      {filteredProducts.length > productsPerPage && (
+      {products.length > productsPerPage && (
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       )}
     </div>

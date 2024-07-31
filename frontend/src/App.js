@@ -14,7 +14,7 @@ import axios from 'axios';
 
 
 
-const AppContent = ({ products }) => {
+const AppContent = ({ products, isFav, basket, setBasket }) => {
   const location = useLocation();
   const hideHeaderRoutes = ['/auth']; // Add any routes where you don't want to show the header
 
@@ -29,9 +29,9 @@ const AppContent = ({ products }) => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path='/store' element={<ProductStore products={products} isFav={false}/>} />
-        <Route path='/store/favs' element={<ProductStore products={products} isFav={true} />} />
-        <Route path='/checkout' element={<Checkout/>} />
+        <Route path='/store' element={<ProductStore products={products} isFav={false} basket={basket} setBasket={setBasket} />} />
+        <Route path='/store/favs' element={<ProductStore products={products} isFav={true} basket={basket} setBasket={setBasket}  />} />
+        <Route path='/checkout' element={<Checkout/>} basket={basket} setBasket={setBasket} />
       </Routes>
       {!hideHeaderRoutes.includes(location.pathname) && <Footer />}
     </>
@@ -40,6 +40,7 @@ const AppContent = ({ products }) => {
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [basket, setBasket] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -51,6 +52,20 @@ function App() {
       }
     };
 
+    const fetchBasket = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/basket`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setBasket(response.data);
+      } catch (error) {
+        console.error('Failed to fetch basket:', error);
+      }
+    };
+
     fetchProducts();
     AOS.init();
     AOS.refresh();
@@ -59,7 +74,7 @@ function App() {
   return (
     <Router>
       <div className='App'>
-        <AppContent products={products} />
+        <AppContent products={products} basket={basket} setBasket={setBasket} />
       </div>
     </Router>
   );

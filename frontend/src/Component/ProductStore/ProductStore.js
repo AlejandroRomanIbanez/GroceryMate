@@ -1,66 +1,98 @@
+// ProductStore.js
 import React, { useEffect, useState } from 'react';
 import ProductGrid from '../ProductStore/ProductGrid/ProductGrid';
 import ProductHeader from '../ProductStore/ProductHeader/ProductHeader';
 import Sidebar from './Sidebar/Sidebar';
 import './ProductStore.css';
+import axios from 'axios';
 
-const ProductStore = ({ products, isFav }) => {
+const ProductStore = ({ products, isFav, basket, setBasket }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [priceRanges, setPriceRanges] = useState([]);
   const [sortOption, setSortOption] = useState("Suggested");
+  const [favProducts, setFavProducts] = useState([]);
 
   useEffect(() => {
-    setFilteredProducts(products);
-
-    const categoriesMap = {};
-    const priceRangeMap = {
-      '0€ - 5€': 0,
-      '5€ - 10€': 0,
-      '10€ - 20€': 0,
-      '20€ - 50€': 0,
-      '50€ - 100€': 0,
-      '100€ - 200€': 0,
-      '200€+': 0,
+    const fetchFavorites = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setFavProducts(response.data);
+      } catch (error) {
+        console.error('Failed to fetch favorites:', error);
+      }
     };
 
-    products.forEach(product => {
-      // Category count
-      if (categoriesMap[product.category]) {
-        categoriesMap[product.category]++;
-      } else {
-        categoriesMap[product.category] = 1;
-      }
+    fetchFavorites();
+  }, []);
 
-      // Price range count
-      if (product.price <= 5) {
-        priceRangeMap['0€ - 5€']++;
-      } else if (product.price <= 10) {
-        priceRangeMap['5€ - 10€']++;
-      } else if (product.price <= 20) {
-        priceRangeMap['10€ - 20€']++;
-      } else if (product.price <= 50) {
-        priceRangeMap['20€ - 50€']++;
-      } else if (product.price <= 100) {
-        priceRangeMap['50€ - 100€']++;
-      } else if (product.price <= 200) {
-        priceRangeMap['100€ - 200€']++;
-      } else {
-        priceRangeMap['200€+']++;
-      }
-    });
+  useEffect(() => {
+    const calculateCategoriesAndPriceRanges = (products) => {
+      const categoriesMap = {};
+      const priceRangeMap = {
+        '0€ - 5€': 0,
+        '5€ - 10€': 0,
+        '10€ - 20€': 0,
+        '20€ - 50€': 0,
+        '50€ - 100€': 0,
+        '100€ - 200€': 0,
+        '200€+': 0,
+      };
 
-    setCategories(Object.entries(categoriesMap));
-    setPriceRanges(Object.entries(priceRangeMap));
-  }, [products]);
+      products.forEach(product => {
+        // Category count
+        if (categoriesMap[product.category]) {
+          categoriesMap[product.category]++;
+        } else {
+          categoriesMap[product.category] = 1;
+        }
+
+        // Price range count
+        if (product.price <= 5) {
+          priceRangeMap['0€ - 5€']++;
+        } else if (product.price <= 10) {
+          priceRangeMap['5€ - 10€']++;
+        } else if (product.price <= 20) {
+          priceRangeMap['10€ - 20€']++;
+        } else if (product.price <= 50) {
+          priceRangeMap['20€ - 50€']++;
+        } else if (product.price <= 100) {
+          priceRangeMap['50€ - 100€']++;
+        } else if (product.price <= 200) {
+          priceRangeMap['100€ - 200€']++;
+        } else {
+          priceRangeMap['200€+']++;
+        }
+      });
+
+      return {
+        categories: Object.entries(categoriesMap),
+        priceRanges: Object.entries(priceRangeMap)
+      };
+    };
+
+    const { categories: productCategories, priceRanges: productPriceRanges } = calculateCategoriesAndPriceRanges(products);
+    const { categories: favCategories, priceRanges: favPriceRanges } = calculateCategoriesAndPriceRanges(favProducts);
+
+    setCategories(isFav ? favCategories : productCategories);
+    setPriceRanges(isFav ? favPriceRanges : productPriceRanges);
+
+    setFilteredProducts(isFav ? favProducts : products);
+  }, [products, favProducts, isFav]);
 
   const filterByCategory = (category) => {
-    const filtered = category ? products.filter(product => product.category === category) : products;
+    const filtered = category ? (isFav ? favProducts : products).filter(product => product.category === category) : (isFav ? favProducts : products);
     setFilteredProducts(filtered);
+    setSortOption("Suggested");
   };
 
   const filterByPriceRange = (range) => {
-    const filtered = products.filter(product => {
+    const filtered = (isFav ? favProducts : products).filter(product => {
       if (range === '0€ - 5€') return product.price <= 5;
       if (range === '5€ - 10€') return product.price > 5 && product.price <= 10;
       if (range === '10€ - 20€') return product.price > 10 && product.price <= 20;
@@ -71,6 +103,7 @@ const ProductStore = ({ products, isFav }) => {
       return true;
     });
     setFilteredProducts(filtered);
+    setSortOption("Suggested");
   };
 
   const sortProducts = (option) => {
@@ -94,7 +127,7 @@ const ProductStore = ({ products, isFav }) => {
       />
       <div className="main-content">
         <ProductHeader sortOption={sortOption} sortProducts={sortProducts} />
-        <ProductGrid products={filteredProducts} isFav={isFav} />
+        <ProductGrid products={filteredProducts} isFav={isFav} basket={basket} setBasket={setBasket} />
       </div>
     </div>
   );
