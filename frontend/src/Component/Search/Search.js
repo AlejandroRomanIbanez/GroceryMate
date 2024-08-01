@@ -52,7 +52,7 @@ const Search = ({ products }) => {
                         <div key={suggestion._id} className='suggestion-item'>
                             <p><strong>{suggestion.name}</strong></p>
                             <p>{suggestion.description}</p>
-                            <p>${suggestion.price.toFixed(2)}</p>
+                            <p>{suggestion.price.toFixed(2)}€</p>
                         </div>
                     ))}
                 </div>
