@@ -77,18 +77,18 @@ const Footer = () => {
                 <Fade left delay={1500}>
                     <div className='footer-info'>
                         <h2 className="footer-title">Information</h2>
-                        <p>Blog</p>
-                        <p>Shop</p>
+                        <a href='/store/favs'>Favs</a>
+                        <a href="">Shop</a>
                     </div>
                 </Fade>
 
                 <Fade left delay={2000}>
                     <div className='footer-info'>
                         <h2 className="footer-title">My Account</h2>
-                        <p>My Favorites</p>
-                        <p>Log Out</p>
-                        <p>Shopping cart</p>
-                        <p>Checkout</p>
+                        <a href="">My Favorites</a>
+                        <a href="">Log Out</a>
+                        <a href="">Shopping cart</a>
+                        <a href="">Checkout</a>
                     </div>
                 </Fade>
             </div>

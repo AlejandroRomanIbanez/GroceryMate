@@ -1,4 +1,3 @@
-// ProductStore.js
 import React, { useEffect, useState } from 'react';
 import ProductGrid from '../ProductStore/ProductGrid/ProductGrid';
 import ProductHeader from '../ProductStore/ProductHeader/ProductHeader';
@@ -116,6 +115,14 @@ const ProductStore = ({ products, isFav, basket, setBasket }) => {
     setFilteredProducts(sortedProducts);
     setSortOption(option);
   };
+
+  useEffect(() => {
+    sortProducts(sortOption);
+  }, [sortOption]);
+
+  useEffect(() => {
+    setFilteredProducts(isFav ? favProducts : products);
+  }, [isFav, favProducts, products]);
 
   return (
     <div className="product-store-container">

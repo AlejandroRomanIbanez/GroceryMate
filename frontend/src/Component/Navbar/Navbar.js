@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import "./Navbar.css";
-import { MdKeyboardArrowDown } from 'react-icons/md';
 import { FaBars } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const navigate = useNavigate();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -16,6 +17,11 @@ const Navbar = () => {
         if (window.innerWidth >= 768) {
             setIsMenuOpen(false);
         }
+    };
+
+    const handleScrollToBottom = (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     };
 
     useEffect(() => {
@@ -37,21 +43,19 @@ const Navbar = () => {
                 {isMobile && isMenuOpen ? (
                     <div className="mobile-menu">
                         <ul className='anim-nav'>
-                            <li><a href="#!">Home</a></li>
-                            <li><a href="#!">Shop <MdKeyboardArrowDown /></a></li>
-                            <li><a href="#!">Page <MdKeyboardArrowDown /></a></li>
-                            <li><a href="#!">Blog</a></li>
-                            <li><a href="#!">Contact</a></li>
+                            <li><a href="/" onClick={() => navigate('/')}>Home</a></li>
+                            <li><a href="/store" onClick={() => navigate('/store')}>Shop</a></li>
+                            <li><a href="/store/favs" onClick={() => navigate('/store/favs')}>Favorites</a></li>
+                            <li><a href="#!" onClick={handleScrollToBottom}>Contact</a></li>
                         </ul>
                     </div>
                 ) : (
                     <div className={`navbar ${isMenuOpen ? 'active' : ''}`}>
                         <ul className='anim-nav'>
-                            <li><a href="#!">Home</a></li>
-                            <li><a href="#!"> <span className='flex items-center'>Shop <MdKeyboardArrowDown className='text-[25px]' /></span> </a></li>
-                            <li><a href="#!"> <span className='flex items-center'>Page <MdKeyboardArrowDown className='text-[25px]' /></span> </a></li>
-                            <li><a href="#!">Blog</a></li>
-                            <li><a href="#!">Contact</a></li>
+                            <li><a href="/" onClick={() => navigate('/')}>Home</a></li>
+                            <li><a href="/store" onClick={() => navigate('/store')}>Shop</a></li>
+                            <li><a href="/store/favs" onClick={() => navigate('/store/favs')}>Favorites</a></li>
+                            <li><a href="#!" onClick={handleScrollToBottom}>Contact</a></li>
                         </ul>
                     </div>
                 )}

@@ -40,6 +40,7 @@
     z-index: 9999; /* Ensure the burger menu stays on top */
     position: absolute;
     left: 20px; /* Align to the left */
+    color: white;
 }
 
 .navbar ul {

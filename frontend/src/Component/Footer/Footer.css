@@ -111,7 +111,8 @@
     text-align: center;
 }
 
-.footer-info p {
+.footer-info p
+.footer-info a {
     font-size: 18px;
     color: #4F4F4F;
     text-align: center;

@@ -148,7 +148,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket }) => {
               <div className="card-header">
                 <p className="lead">{product.title}</p>
               </div>
-              <img src={product.imageUrl} alt={product.name} className="card-img-top" />
+              <img src={product.image_url} alt={product.name} className="card-img-top" />
               <div className="card-body">
                 <div className="content">
                   <p className="category">
