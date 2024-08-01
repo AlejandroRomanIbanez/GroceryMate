@@ -1,25 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './ProductHeader.css';
 
-const ProductHeader = ({ sortOption, sortProducts }) => {
+const ProductHeader = ({ sortOption, sortDirection, sortProducts }) => {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
+  const selectContainerRef = useRef(null);
 
   const options = ["Suggested", "Name", "Price"];
 
   const handleOptionClick = (option) => {
     sortProducts(option);
-    setIsSelectOpen(false);
+    if (option === "Suggested") {
+      setIsSelectOpen(false);
+    }
   };
 
   const toggleSelectOpen = () => {
     setIsSelectOpen(!isSelectOpen);
   };
 
+  const handleClickOutside = (event) => {
+    if (selectContainerRef.current && !selectContainerRef.current.contains(event.target)) {
+      setIsSelectOpen(false);
+    }
+  };
+
+  const getSortArrow = (option) => {
+    if (option === "Suggested" || option !== sortOption) return null;
+    return sortDirection === "asc" ? "▲" : "▼";
+  };
+
+  useEffect(() => {
+    if (isSelectOpen) {
+      document.addEventListener('click', handleClickOutside);
+    } else {
+      document.removeEventListener('click', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [isSelectOpen]);
+
   return (
     <header className="product-header">
       <strong className="d-block py-2">32 Items found</strong>
       <div className="ms-auto d-flex align-items-center">
-        <div className={`custom-select-container ${isSelectOpen ? 'select-open' : ''}`}>
+        <div ref={selectContainerRef} className={`custom-select-container ${isSelectOpen ? 'select-open' : ''}`}>
           <div className="custom-select" onClick={toggleSelectOpen}>
             {sortOption}
           </div>
@@ -31,7 +56,7 @@ const ProductHeader = ({ sortOption, sortProducts }) => {
                   className="custom-option"
                   onClick={() => handleOptionClick(option)}
                 >
-                  {option}
+                  {option} {getSortArrow(option)}
                 </div>
               ))}
             </div>

@@ -10,6 +10,7 @@ const ProductStore = ({ products, isFav, basket, setBasket }) => {
   const [categories, setCategories] = useState([]);
   const [priceRanges, setPriceRanges] = useState([]);
   const [sortOption, setSortOption] = useState("Suggested");
+  const [sortDirection, setSortDirection] = useState("asc");
   const [favProducts, setFavProducts] = useState([]);
 
   useEffect(() => {
@@ -106,19 +107,26 @@ const ProductStore = ({ products, isFav, basket, setBasket }) => {
   };
 
   const sortProducts = (option) => {
-    const sortedProducts = [...filteredProducts];
-    if (option === "Name") {
-      sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (option === "Price") {
-      sortedProducts.sort((a, b) => a.price - b.price);
-    }
-    setFilteredProducts(sortedProducts);
-    setSortOption(option);
-  };
+    let sortedProducts = [...filteredProducts];
+    let newSortDirection = sortDirection;
 
-  useEffect(() => {
-    sortProducts(sortOption);
-  }, [sortOption]);
+    if (option === sortOption) {
+      newSortDirection = sortDirection === "asc" ? "desc" : "asc";
+    } else {
+      setSortOption(option);
+      newSortDirection = "asc";
+    }
+
+    const directionMultiplier = newSortDirection === "asc" ? 1 : -1;
+    if (option === "Name") {
+      sortedProducts.sort((a, b) => a.name.localeCompare(b.name) * directionMultiplier);
+    } else if (option === "Price") {
+      sortedProducts.sort((a, b) => (a.price - b.price) * directionMultiplier);
+    }
+
+    setSortDirection(newSortDirection);
+    setFilteredProducts(sortedProducts);
+  };
 
   useEffect(() => {
     setFilteredProducts(isFav ? favProducts : products);
@@ -133,7 +141,7 @@ const ProductStore = ({ products, isFav, basket, setBasket }) => {
         filterByPriceRange={filterByPriceRange}
       />
       <div className="main-content">
-        <ProductHeader sortOption={sortOption} sortProducts={sortProducts} />
+        <ProductHeader sortOption={sortOption} sortDirection={sortDirection} sortProducts={sortProducts} />
         <ProductGrid products={filteredProducts} isFav={isFav} basket={basket} setBasket={setBasket} />
       </div>
     </div>
