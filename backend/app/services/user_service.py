@@ -5,6 +5,16 @@ from typing import List, Dict
 
 
 def add_to_favorites(user_id: str, product_id: str) -> dict:
+    """
+    Adds a product to the user's list of favorite products in the database.
+
+    Args:
+        user_id (str): The ID of the user.
+        product_id (str): The ID of the product to add.
+
+    Returns:
+        dict: The raw result of the update operation.
+    """
     users_collection = mongo.db.users
     result = users_collection.update_one(
         {"_id": ObjectId(user_id)},
@@ -14,6 +24,16 @@ def add_to_favorites(user_id: str, product_id: str) -> dict:
 
 
 def remove_from_favorites(user_id: str, product_id: str) -> dict:
+    """
+    Removes a product from the user's list of favorite products in the database.
+
+    Args:
+        user_id (str): The ID of the user.
+        product_id (str): The ID of the product to remove.
+
+    Returns:
+        dict: The raw result of the update operation.
+    """
     users_collection = mongo.db.users
     result = users_collection.update_one(
         {"_id": ObjectId(user_id)},
@@ -23,6 +43,15 @@ def remove_from_favorites(user_id: str, product_id: str) -> dict:
 
 
 def get_user_favorites(user_id: str) -> list:
+    """
+    Retrieves the user's list of favorite products from the database.
+
+    Args:
+        user_id (str): The ID of the user.
+
+    Returns:
+        list: A list of dictionaries, each representing a favorite product.
+    """
     users_collection = mongo.db.users
     products_collection = mongo.db.products
     user = users_collection.find_one({"_id": ObjectId(user_id)})
@@ -34,6 +63,16 @@ def get_user_favorites(user_id: str) -> list:
 
 
 def sync_basket_service(user_id: str, basket: List[Dict]) -> dict:
+    """
+    Synchronizes the user's basket with the provided basket data in the database.
+
+    Args:
+        user_id (str): The ID of the user.
+        basket (List[Dict]): The basket data to synchronize.
+
+    Returns:
+        dict: A message indicating the result of the synchronization.
+    """
     users_collection = mongo.db.users
     result = users_collection.update_one(
         {"_id": ObjectId(user_id)},
@@ -46,6 +85,15 @@ def sync_basket_service(user_id: str, basket: List[Dict]) -> dict:
 
 
 def get_user_basket(user_id: str) -> List[Dict]:
+    """
+    Retrieves the user's current basket from the database.
+
+    Args:
+        user_id (str): The ID of the user.
+
+    Returns:
+        List[Dict]: The user's basket.
+    """
     users_collection = mongo.db.users
     user = users_collection.find_one({"_id": ObjectId(user_id)})
 
@@ -56,6 +104,16 @@ def get_user_basket(user_id: str) -> List[Dict]:
 
 
 def remove_from_basket_service(user_id: str, product_id: str) -> dict:
+    """
+    Removes a product from the user's basket in the database.
+
+    Args:
+        user_id (str): The ID of the user.
+        product_id (str): The ID of the product to remove.
+
+    Returns:
+        dict: A message indicating the result of the removal.
+    """
     users_collection = mongo.db.users
     result = users_collection.update_one(
         {"_id": ObjectId(user_id)},

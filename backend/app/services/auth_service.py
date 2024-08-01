@@ -3,6 +3,18 @@ from app import mongo
 
 
 def register_user(data):
+    """
+    Register a new user in the database.
+
+    Hashes the user's password and stores the user information in the database.
+    Checks if the username already exists.
+
+    Args:
+        data (UserRegistration): User registration data.
+
+    Returns:
+        tuple: JSON response message and HTTP status code.
+    """
     username = data.username
     email = data.email
     password = generate_password_hash(data.password)
@@ -15,6 +27,17 @@ def register_user(data):
 
 
 def login_user(data):
+    """
+    Authenticate a user.
+
+    Verifies the user's email and password against the database records.
+
+    Args:
+        data (UserLogin): User login data.
+
+    Returns:
+        dict: User data if authentication is successful, otherwise an error message.
+    """
     email = data.email
     password = data.password
 

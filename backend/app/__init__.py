@@ -13,6 +13,15 @@ mongo = MongoClient(mongo_uri)
 
 
 def create_app():
+    """
+    Creates and configures the Flask application.
+
+    This function initializes the Flask app with necessary configurations, including
+    enabling CORS, setting up JWT authentication, and registering blueprints for routes.
+
+    Returns:
+        Flask: The configured Flask application.
+    """
     app = Flask(__name__)
     CORS(app)
 
