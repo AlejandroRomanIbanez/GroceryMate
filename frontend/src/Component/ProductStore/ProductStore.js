@@ -142,7 +142,13 @@ const ProductStore = ({ products, isFav, basket, setBasket }) => {
       />
       <div className="main-content">
         <ProductHeader sortOption={sortOption} sortDirection={sortDirection} sortProducts={sortProducts} />
-        <ProductGrid products={filteredProducts} isFav={isFav} basket={basket} setBasket={setBasket} />
+        <ProductGrid
+          products={filteredProducts}
+          isFav={isFav}
+          basket={basket}
+          setBasket={setBasket}
+          filterByCategory={filterByCategory}
+        />
       </div>
     </div>
   );

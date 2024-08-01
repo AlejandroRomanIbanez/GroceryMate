@@ -4,7 +4,7 @@ import Pagination from '../ProductPagination/ProductPagination';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const ProductGrid = ({ products, isFav, basket, setBasket }) => {
+const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [favProductIds, setFavProductIds] = useState([]);
   const [quantities, setQuantities] = useState({});
@@ -146,13 +146,20 @@ const ProductGrid = ({ products, isFav, basket, setBasket }) => {
           <div className="product-card" key={product._id}>
             <div className="card">
               <div className="card-header">
-                <p className="lead">{product.title}</p>
+                <p className="lead">{product.name}</p>
               </div>
               <img src={product.image_url} alt={product.name} className="card-img-top" />
               <div className="card-body">
                 <div className="content">
                   <p className="category">
-                    <a href="#!" className="text-muted">
+                    <a
+                      href="#!"
+                      className="text-muted"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        filterByCategory(product.category);
+                      }}
+                    >
                       {product.category}
                     </a>
                   </p>
