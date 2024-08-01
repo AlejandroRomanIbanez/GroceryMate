@@ -26,19 +26,29 @@
   padding: 20px;
 }
 
-.checkout-card-image-container {
+.checkout-card-item-container {
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  display: flex;
+  align-items: center;
   position: relative;
+}
+
+.checkout-card-image-container {
   width: 150px;
 }
 
 .checkout-card-image {
   width: 100%;
+  border-radius: 30px;
 }
 
 .remove-icon {
   position: absolute;
   top: 5px;
-  left: 5px;
+  right: 5px;
   color: black;
   cursor: pointer;
   font-size: 24px;
@@ -70,18 +80,18 @@
 }
 
 .quantity-input {
-  width: 10px;
+  width: 40px;
   text-align: center;
   font-weight: bold;
   color: black;
   border: none;
-  -moz-appearance: textfield; /* Remove the default appearance in Firefox */
+  -moz-appearance: textfield;
 }
 
 .quantity-input::-webkit-outer-spin-button,
 .quantity-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  margin: 0; /* Remove the default appearance in Chrome, Safari, and Edge */
+  margin: 0;
 }
 
 .checkout-quantity button {
@@ -114,7 +124,8 @@
   padding: 20px;
 }
 
-.payment-input {
+.payment-input,
+.shipment-input {
   width: 100%;
   padding: 10px;
   margin-bottom: 20px;
@@ -123,7 +134,8 @@
   box-sizing: border-box;
 }
 
-.payment-form {
+.payment-form,
+.shipment-form {
   position: relative;
 }
 

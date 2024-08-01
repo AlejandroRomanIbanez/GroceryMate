@@ -42,7 +42,6 @@ const ProductHeader = ({ sortOption, sortDirection, sortProducts }) => {
 
   return (
     <header className="product-header">
-      <strong className="d-block py-2">32 Items found</strong>
       <div className="ms-auto d-flex align-items-center">
         <div ref={selectContainerRef} className={`custom-select-container ${isSelectOpen ? 'select-open' : ''}`}>
           <div className="custom-select" onClick={toggleSelectOpen}>

@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Checkout.css";
 import axios from 'axios';
 
 export default function Checkout({ products, basket, setBasket }) {
   const [productQuantities, setProductQuantities] = useState({});
+  const [address, setAddress] = useState({ street: '', city: '', postalCode: '' });
+  const [payment, setPayment] = useState({ cardNumber: '', nameOnCard: '', expiration: '', cvv: '' });
+  const navigate = useNavigate();
 
   useEffect(() => {
     setProductQuantities(basket.reduce((acc, item) => {
@@ -73,6 +77,34 @@ export default function Checkout({ products, basket, setBasket }) {
     return products.find(product => product._id === productId) || {};
   };
 
+  const handleInputChange = (e, setState) => {
+    const { name, value } = e.target;
+    setState(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const allFieldsFilled = Object.values(address).every(field => field.trim() !== '') &&
+      Object.values(payment).every(field => field.trim() !== '');
+
+    if (allFieldsFilled) {
+      setBasket([]); // Clear the basket
+      navigate('/'); // Navigate to the home page
+    } else {
+      alert('Please fill all fields');
+    }
+  };
+
+  const calculateTotal = () => {
+    const productTotal = basket.reduce((acc, item) => {
+      const product = getProductDetails(item.product_id);
+      return acc + product.price * (productQuantities[item.product_id] || 0);
+    }, 0);
+
+    return basket.length > 0 ? (productTotal + 10).toFixed(2) : productTotal.toFixed(2);
+  };
+
   return (
     <section className="checkout-section">
       <div className="checkout-container">
@@ -86,40 +118,42 @@ export default function Checkout({ products, basket, setBasket }) {
               const product = getProductDetails(item.product_id);
               return (
                 <div key={item.product_id} className="d-flex align-items-center mb-5">
-                  <div className="checkout-card-image-container">
-                    <img
-                      src={product.imageUrl}
-                      className="checkout-card-image"
-                      alt="Product"
-                    />
-                    <a href="#!" className="remove-icon" onClick={() => handleRemoveFromCart(item.product_id)}>
-                      &times;
-                    </a>
-                  </div>
-                  <div className="flex-grow-1 ms-3">
-                    <h5 className="checkout-product-title">{product.name}</h5>
-                    <div className="d-flex align-items-center">
-                      <p className="checkout-price">{product.price}€</p>
-                      <div className="checkout-quantity">
-                        <button
-                          className="minus"
-                          onClick={() => handleQuantityChange(item.product_id, -1)}
-                        >
-                          -
-                        </button>
-                        <input
-                          className="quantity-input"
-                          min={0}
-                          value={productQuantities[item.product_id] || 0}
-                          readOnly
-                          type="number"
-                        />
-                        <button
-                          className="plus"
-                          onClick={() => handleQuantityChange(item.product_id, 1)}
-                        >
-                          +
-                        </button>
+                  <div className="checkout-card-item-container">
+                    <div className="checkout-card-image-container">
+                      <img
+                        src={product.image_url}
+                        className="checkout-card-image"
+                        alt="Product"
+                      />
+                      <a href="#!" className="remove-icon" onClick={() => handleRemoveFromCart(item.product_id)}>
+                        &times;
+                      </a>
+                    </div>
+                    <div className="flex-grow-1 ms-3">
+                      <h5 className="checkout-product-title">{product.name}</h5>
+                      <div className="d-flex align-items-center">
+                        <p className="checkout-price">{product.price}€</p>
+                        <div className="checkout-quantity">
+                          <button
+                            className="minus"
+                            onClick={() => handleQuantityChange(item.product_id, -1)}
+                          >
+                            -
+                          </button>
+                          <input
+                            className="quantity-input"
+                            min={0}
+                            value={productQuantities[item.product_id] || 0}
+                            readOnly
+                            type="number"
+                          />
+                          <button
+                            className="plus"
+                            onClick={() => handleQuantityChange(item.product_id, 1)}
+                          >
+                            +
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -143,29 +177,67 @@ export default function Checkout({ products, basket, setBasket }) {
             <div className="total-container">
               <h5 className="fw-bold mb-0">Total:</h5>
               <h5 className="fw-bold mb-0">
-                {basket.reduce((acc, item) => {
-                  const product = getProductDetails(item.product_id);
-                  return acc + product.price * (productQuantities[item.product_id] || 0);
-                }, 0) + 10}€
+                {calculateTotal()}€
               </h5>
             </div>
           </div>
         </div>
         <div className="checkout-card payment-section">
           <div className="checkout-card-body">
-            <h3 className="mb-5 pt-2 text-center fw-bold text-uppercase">
-              Payment
-            </h3>
-            <form className="payment-form">
+            <form className="payment-form" onSubmit={handleSubmit}>
+              <h3 className="mb-5 pt-2 text-center fw-bold text-uppercase">
+                Shipment Address
+              </h3>
+              <input
+                className="shipment-input"
+                placeholder="Street Address"
+                type="text"
+                name="street"
+                value={address.street}
+                onChange={(e) => handleInputChange(e, setAddress)}
+              />
+              <input
+                className="shipment-input"
+                placeholder="City"
+                type="text"
+                name="city"
+                value={address.city}
+                onChange={(e) => handleInputChange(e, setAddress)}
+              />
+              <input
+                className="shipment-input"
+                placeholder="Postal Code"
+                type="text"
+                name="postalCode"
+                value={address.postalCode}
+                onChange={(e) => handleInputChange(e, setAddress)}
+              />
+              <hr
+                className="mb-4 mt-4"
+                style={{
+                  height: "2px",
+                  backgroundColor: "#1266f1",
+                  opacity: 1,
+                }}
+              />
+              <h3 className="mb-5 pt-2 text-center fw-bold text-uppercase">
+                Payment
+              </h3>
               <input
                 className="payment-input"
                 placeholder="Card number"
                 type="text"
+                name="cardNumber"
+                value={payment.cardNumber}
+                onChange={(e) => handleInputChange(e, setPayment)}
               />
               <input
                 className="payment-input"
                 placeholder="Name on card"
                 type="text"
+                name="nameOnCard"
+                value={payment.nameOnCard}
+                onChange={(e) => handleInputChange(e, setPayment)}
               />
               <div className="checkout-row">
                 <div className="checkout-col-md-6">
@@ -173,8 +245,11 @@ export default function Checkout({ products, basket, setBasket }) {
                     className="payment-input"
                     placeholder="Expiration"
                     type="text"
+                    name="expiration"
                     minLength="7"
                     maxLength="7"
+                    value={payment.expiration}
+                    onChange={(e) => handleInputChange(e, setPayment)}
                   />
                 </div>
                 <div className="checkout-col-md-6">
@@ -182,8 +257,11 @@ export default function Checkout({ products, basket, setBasket }) {
                     className="payment-input"
                     placeholder="Cvv"
                     type="text"
+                    name="cvv"
                     minLength="3"
                     maxLength="3"
+                    value={payment.cvv}
+                    onChange={(e) => handleInputChange(e, setPayment)}
                   />
                 </div>
               </div>
