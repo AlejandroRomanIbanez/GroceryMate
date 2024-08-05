@@ -1,6 +1,9 @@
 # Use the official Node.js image from the Docker Hub
 FROM node:18
 
+# Set Node.js memory limit environment variable
+ENV NODE_OPTIONS=--max_old_space_size=768
+
 # Set the working directory
 WORKDIR /app
 
