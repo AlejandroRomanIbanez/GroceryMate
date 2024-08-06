@@ -1,27 +1,11 @@
-# Use the official Node.js image from the Docker Hub
-FROM node:18
+# Use a lightweight base image with Nginx
+FROM nginx:alpine
 
-# Set Node.js memory limit environment variable
-ENV NODE_OPTIONS=--max_old_space_size=768
+# Copy the pre-built React app into the Nginx directory
+COPY build/ /usr/share/nginx/html/
 
-# Set the working directory
-WORKDIR /app
+# Expose port 80
+EXPOSE 80
 
-# Copy package.json and install dependencies
-COPY frontend/package.json frontend/package-lock.json ./
-RUN npm install
-
-# Copy the rest of the application code
-COPY frontend/ .
-
-# Build the React app
-RUN npm run build
-
-# Install serve to serve the React app
-RUN npm install -g serve
-
-# Expose the port the app runs on
-EXPOSE 3000
-
-# Command to run the React app
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Command to run Nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]
