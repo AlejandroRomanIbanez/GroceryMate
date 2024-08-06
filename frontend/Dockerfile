@@ -2,7 +2,7 @@
 FROM nginx:alpine
 
 # Copy the pre-built React app into the Nginx directory
-COPY build/ /usr/share/nginx/html/
+COPY frontend/build/ /usr/share/nginx/html/
 
 # Expose port 80
 EXPOSE 80
