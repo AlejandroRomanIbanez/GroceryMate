@@ -110,13 +110,13 @@ export default function Checkout({ products, basket, setBasket }) {
 
   const calculateTotal = () => {
     const productTotal = calculateProductTotal();
-    const shipmentCost = freeShippingAchieved || productTotal >= 20 ? 0 : 5;
+    const shipmentCost = freeShippingAchieved || productTotal >= 20 ? 0 : 10;
     return (parseFloat(productTotal) + shipmentCost).toFixed(2);
   };
 
   const calculateShipmentCost = () => {
     const productTotal = calculateProductTotal();
-    return freeShippingAchieved || productTotal >= 20 ? 0 : 5;
+    return freeShippingAchieved || productTotal >= 20 ? 0 : 10;
   };
 
   const checkForFreeShipping = (currentBasket) => {
@@ -143,52 +143,54 @@ export default function Checkout({ products, basket, setBasket }) {
               Your products
             </h3>
 
-            {basket.map((item) => {
-              const product = getProductDetails(item.product_id);
-              return (
-                <div key={item.product_id} className="d-flex align-items-center mb-5">
-                  <div className="checkout-card-item-container">
-                    <div className="checkout-card-image-container">
-                      <img
-                        src={product.image_url}
-                        className="checkout-card-image"
-                        alt="Product"
-                      />
-                      <a href="#!" className="remove-icon" onClick={() => handleRemoveFromCart(item.product_id)}>
-                        &times;
-                      </a>
-                    </div>
-                    <div className="flex-grow-1 ms-3">
-                      <h5 className="checkout-product-title">{product.name}</h5>
-                      <div className="d-flex align-items-center">
-                        <p className="checkout-price">{product.price}€</p>
-                        <div className="checkout-quantity">
-                          <button
-                            className="minus"
-                            onClick={() => handleQuantityChange(item.product_id, -1)}
-                          >
-                            -
-                          </button>
-                          <input
-                            className="quantity-input"
-                            min={0}
-                            value={productQuantities[item.product_id] || 0}
-                            readOnly
-                            type="number"
-                          />
-                          <button
-                            className="plus"
-                            onClick={() => handleQuantityChange(item.product_id, 1)}
-                          >
-                            +
-                          </button>
+            <div className="basket-items-container">
+              {basket.map((item) => {
+                const product = getProductDetails(item.product_id);
+                return (
+                  <div key={item.product_id} className="d-flex align-items-center mb-5">
+                    <div className="checkout-card-item-container">
+                      <div className="checkout-card-image-container">
+                        <img
+                          src={product.image_url}
+                          className="checkout-card-image"
+                          alt="Product"
+                        />
+                        <a href="#!" className="remove-icon" onClick={() => handleRemoveFromCart(item.product_id)}>
+                          &times;
+                        </a>
+                      </div>
+                      <div className="flex-grow-1 ms-3">
+                        <h5 className="checkout-product-title">{product.name}</h5>
+                        <div className="d-flex align-items-center">
+                          <p className="checkout-price">{product.price}€</p>
+                          <div className="checkout-quantity">
+                            <button
+                              className="minus"
+                              onClick={() => handleQuantityChange(item.product_id, -1)}
+                            >
+                              -
+                            </button>
+                            <input
+                              className="quantity-input"
+                              min={0}
+                              value={productQuantities[item.product_id] || 0}
+                              readOnly
+                              type="number"
+                            />
+                            <button
+                              className="plus"
+                              onClick={() => handleQuantityChange(item.product_id, 1)}
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
 
             <hr
               className="mb-4"

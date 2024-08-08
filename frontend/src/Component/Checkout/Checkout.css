@@ -102,6 +102,11 @@
   padding: 0 10px;
 }
 
+.basket-items-container {
+  max-height: 300px; /* Adjust as needed */
+  overflow-y: auto;
+}
+
 .shipment-container,
 .product-total-container,
 .total-container {
