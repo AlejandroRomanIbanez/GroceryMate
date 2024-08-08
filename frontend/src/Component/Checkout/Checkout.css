@@ -102,22 +102,26 @@
   padding: 0 10px;
 }
 
-.shipment-container {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  padding: 10px;
-  margin-bottom: 20px;
-}
-
+.shipment-container,
+.product-total-container,
 .total-container {
   display: flex;
   justify-content: space-between;
   padding: 10px;
-  background-color: #e1f5fe;
   font-weight: bold;
-  border-radius: 15px;
   margin-bottom: 20px;
+}
+
+.total-container {
+  background-color: #e1f5fe;
+  border-radius: 15px;
+}
+
+.free-shipment-message {
+  text-align: center;
+  font-size: 14px;
+  color: #007bff;
+  margin-top: 10px;
 }
 
 .payment-section {
