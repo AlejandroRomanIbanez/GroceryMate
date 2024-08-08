@@ -266,7 +266,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
             <div className="card">
               <div className="card-body">
                 <img src={notfound} alt="No products found" className="no-products-image" />
-                {underage ? (
+                {underage && !isFav && products.length > 0 ?  (
                   <>
                     <h2>Underage Notice</h2>
                     <p>You are underage and cannot view alcohol products. Please wait until you are 18 or older to access these products.</p>
@@ -276,7 +276,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
                     <h2>No favorite products found</h2>
                     <p>You don't have any favorite products yet, take a look into our products, you're going to love it.</p>
                   </>
-                ) : (
+                ) : products.length === 0 && (
                   <>
                     <h2>No products found</h2>
                     <p>There are no products matching your filters at the moment. We are working on bringing more products to the store. Please check back later.</p>
