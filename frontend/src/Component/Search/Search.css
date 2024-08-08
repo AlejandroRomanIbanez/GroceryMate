@@ -36,6 +36,8 @@
     top: 45px;
     left: 0;
     width: 100%;
+    max-height: 300px; /* Adjust as needed */
+    overflow-y: auto;
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 0 0 20.5px 20.5px;
@@ -49,4 +51,9 @@
 
 .suggestion-item:hover {
     background-color: #f0f0f0;
+}
+
+.loading {
+    text-align: center;
+    padding: 10px;
 }
