@@ -1,0 +1,85 @@
+.product-comments {
+    padding: 2rem 0;
+  }
+  
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .comment {
+    display: flex;
+    margin-bottom: 1.5rem;
+  }
+  
+  .comment-body {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    flex: 1;
+  }
+  
+  .comment-body h5 {
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .comment-body .small {
+    color: #aaa;
+    margin-bottom: 1rem;
+  }
+  
+  .comment-footer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+  
+  .comment-actions {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .comment-actions .rating {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .comment-actions .rating .small {
+    margin-left: 0.5rem;
+    color: #aaa;
+  }
+  
+  .link-muted {
+    color: #aaa;
+    text-decoration: none;
+  }
+  
+  .link-muted:hover {
+    color: #1266f1;
+  }
+  
+  .me-2 {
+    margin-right: 0.5rem;
+  }
+  
+  .me-1 {
+    margin-right: 0.25rem;
+  }
+  
+  /* Custom gradient star colors */
+  .react-rater-star.is-active,
+  .react-rater-star.is-active-half:before {
+    background: linear-gradient(90deg, #66ccff, #0056b3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .react-rater-star.is-active-half:before {
+    background: linear-gradient(90deg, #66ccff, #0056b3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
