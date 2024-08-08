@@ -1,7 +1,13 @@
 from pydantic import BaseModel, Field, HttpUrl
-from typing import Optional, Dict
+from typing import Optional, Dict, List
 from enum import Enum
 from ..helpers import to_dict
+
+
+class ReviewModel(BaseModel):
+    author_name: str = Field(..., description="Name of the reviewer")
+    review: float = Field(..., ge=1, le=5, description="Rating of the product, between 1 and 5")
+    comment: str = Field(..., max_length=500, description="Review comment, up to 500 characters")
 
 
 class ProductCategory(Enum):
@@ -28,6 +34,7 @@ class ProductModel(BaseModel):
     category: ProductCategory = Field(..., description="Category of the product")
     image_url: HttpUrl = Field(..., description="URL of the product image")
     is_alcohol: bool = Field(default=False, description="Indicates if the product is alcoholic")
+    reviews: Optional[List[ReviewModel]] = Field(default=None, description="List of reviews for the product")
 
     def to_dict(self) -> Dict:
         return to_dict(self)

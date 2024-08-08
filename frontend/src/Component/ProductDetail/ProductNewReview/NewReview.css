@@ -5,54 +5,54 @@
   padding: 1rem 0;
 }
 
-.container {
+.new-review-container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 0 1rem;
 }
 
-.card {
+.new-review-card {
   border: none;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   background-color: #fff;
 }
 
-.card-body {
+.new-review-card-body {
   padding: 2rem 4rem;
 }
 
-.d-flex {
+.new-review-d-flex {
   display: flex;
   align-items: flex-start;
 }
 
-.w-100 {
+.new-review-w-100 {
   width: 100%;
 }
 
-.rounded-circle {
+.new-review-rounded-circle {
   border-radius: 50%;
 }
 
-.shadow-1-strong {
+.new-review-shadow-1-strong {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.me-3 {
+.new-review-me-3 {
   margin-right: 1rem;
 }
 
-.rating-stars {
+.new-review-rating-stars {
   display: flex;
   margin-bottom: 1rem;
 }
 
-.rating-stars .react-rater-star {
+.new-review-rating-stars .react-rater-star {
   font-size: 1.5rem;
 }
 
-.form-control {
+.new-review-form-control {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid #ced4da;
@@ -63,13 +63,13 @@
   margin-right: 25rem;
 }
 
-.btn-container {
+.new-review-btn-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.btn {
+.new-review-btn {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 0.25rem;
@@ -80,20 +80,20 @@
   margin-right: 1%;
 }
 
-.btn:last-child {
+.new-review-btn:last-child {
   margin-right: 0;
 }
 
-.btn-cancel {
+.new-review-btn-cancel {
   background-color: #0056b3;
   color: white;
 }
 
-.btn-cancel:hover {
+.new-review-btn-cancel:hover {
   background-color: #004494;
 }
 
-.btn-send {
+.new-review-btn-send {
   background-color: #66ccff;
   color: white;
   display: flex;
@@ -101,22 +101,22 @@
   justify-content: center;
 }
 
-.btn-send:hover {
+.new-review-btn-send:hover {
   background-color: #4bb5e7;
 }
 
-.btn-send i {
+.new-review-btn-send i {
   margin-left: 0.5rem;
 }
 
-.mt-3 {
+.new-review-mt-3 {
   margin-top: 1rem;
 }
 
-.react-rater-star.is-active,
-.react-rater-star.is-active-half:before,
-.react-rater-star:hover,
-.react-rater-star:hover ~ .react-rater-star {
+.new-review-react-rater-star.is-active,
+.new-review-react-rater-star.is-active-half:before,
+.new-review-react-rater-star:hover,
+.new-review-react-rater-star:hover ~ .new-review-react-rater-star {
   background: linear-gradient(90deg, #66ccff, #0056b3);
   -webkit-background-clip: text;
   background-clip: text;
@@ -124,9 +124,9 @@
   text-fill-color: transparent;
 }
 
-.react-rater-star:hover,
-.react-rater-star:hover ~ .react-rater-star,
-.react-rater-star:hover ~ .react-rater-star:before {
+.new-review-react-rater-star:hover,
+.new-review-react-rater-star:hover ~ .new-review-react-rater-star,
+.new-review-react-rater-star:hover ~ .new-review-react-rater-star:before {
   background: linear-gradient(90deg, #66ccff, #0056b3) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;

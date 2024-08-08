@@ -31,8 +31,6 @@ const ProductDetail = () => {
     return <p>Loading...</p>;
   }
 
-  const mockRating = Math.random() * 5;
-
   return (
     <section className={styles.productDetailContainer}>
       <div className={styles.imageGalleryContainer}>
@@ -48,8 +46,8 @@ const ProductDetail = () => {
       <div className={styles.descriptionContainer}>
         <h2>{productDetailItem.name}</h2>
         <div className={styles.ratingContainer}>
-          <Rater total={5} interactive={false} rating={mockRating} className={styles.rating} />
-          <p className={styles.reviews}>({Math.floor(mockRating * 20)})</p>
+          <Rater total={5} interactive={false} rating={productDetailItem.rating || 0} className={styles.rating} />
+          <p className={styles.reviews}>({productDetailItem.reviews?.length || 0})</p>
         </div>
         <p className={styles.category}>Category: <span>{productDetailItem.category}</span></p>
         <p className={styles.price}>${productDetailItem.price}</p>
@@ -65,7 +63,7 @@ const ProductDetail = () => {
         </div>
       </div>
       <NewReview />
-      <ProductComments />
+      <ProductComments reviews={productDetailItem.reviews || []} />
     </section>
   );
 };
