@@ -12,6 +12,7 @@ const ProductStore = ({ products, isFav, basket, setBasket }) => {
   const [sortOption, setSortOption] = useState("Suggested");
   const [sortDirection, setSortDirection] = useState("asc");
   const [favProducts, setFavProducts] = useState([]);
+  const [resetPage, setResetPage] = useState(false);
 
   useEffect(() => {
     const fetchFavorites = async () => {
@@ -86,12 +87,14 @@ const ProductStore = ({ products, isFav, basket, setBasket }) => {
   }, [products, favProducts, isFav]);
 
   const filterByCategory = (category) => {
+    setResetPage(prev => !prev);
     const filtered = category ? (isFav ? favProducts : products).filter(product => product.category === category) : (isFav ? favProducts : products);
     setFilteredProducts(filtered);
     setSortOption("Suggested");
   };
 
   const filterByPriceRange = (range) => {
+    setResetPage(prev => !prev);
     const filtered = (isFav ? favProducts : products).filter(product => {
       if (range === '0€ - 5€') return product.price <= 5;
       if (range === '5€ - 10€') return product.price > 5 && product.price <= 10;
@@ -155,6 +158,7 @@ const ProductStore = ({ products, isFav, basket, setBasket }) => {
           basket={basket}
           setBasket={setBasket}
           filterByCategory={filterByCategory}
+          resetPage={resetPage}
         />
       </div>
     </div>

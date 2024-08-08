@@ -4,7 +4,7 @@ import Pagination from '../ProductPagination/ProductPagination';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory }) => {
+const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, resetPage }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [favProductIds, setFavProductIds] = useState([]);
   const [quantities, setQuantities] = useState({});
@@ -47,6 +47,10 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory }) =
     fetchFavorites();
     fetchBasket();
   }, [setBasket]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [resetPage]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
