@@ -6,18 +6,22 @@ import { useNavigate } from 'react-router-dom';
 import notfound from '../../Assets/no-product-found.png';
 import ProductGridSkeleton from '../../Skeleton/ProductGridSkeleton';
 import { toast, Toaster } from 'react-hot-toast';
+import AgeVerificationModal from '../../AgeVerification/AgeVerificationModal'; // Import the modal component
 
 const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, resetPage }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [favProductIds, setFavProductIds] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(true);
+  const [userAgeVerified, setUserAgeVerified] = useState(sessionStorage.getItem('userAgeVerified') === 'true');
+  const [underage, setUnderage] = useState(sessionStorage.getItem('underage') === 'true');
   const navigate = useNavigate();
 
   const productsPerPage = 12;
-  const totalPages = Math.ceil(products.length / productsPerPage);
 
   useEffect(() => {
+    if (!userAgeVerified) return;
+
     const fetchFavorites = async () => {
       if (isFav) {
         try {
@@ -53,7 +57,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
 
     fetchFavorites();
     fetchBasket();
-  }, [setBasket]);
+  }, [setBasket, userAgeVerified]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -158,13 +162,42 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
     }
   };
 
+  // Filter products based on user age verification and underage status
+  const filteredProducts = (userAgeVerified && !underage) 
+    ? products 
+    : products.filter(product => !product.is_alcohol);
+
+  // Recalculate total pages based on filtered products
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const handleAgeVerificationConfirm = (isOfAge) => {
+    if (isOfAge) {
+      setUserAgeVerified(true);
+      sessionStorage.setItem('userAgeVerified', 'true');
+      toast.success('You are of age. You can now view all products, even alcohol products.');
+    } else {
+      setUnderage(true);
+      sessionStorage.setItem('underage', 'true');
+      setUserAgeVerified(true);
+      sessionStorage.setItem('userAgeVerified', 'true');
+      toast.error('You are underage. You can still browse the site, but you will not be able to view alcohol products.');
+    }
+  };
 
   return (
     <div className="container">
       <Toaster position="bottom-center" reverseOrder={false} />
+      {!userAgeVerified && (
+        <AgeVerificationModal
+          show={!userAgeVerified}
+          onClose={() => setUserAgeVerified(false)}
+          onConfirm={handleAgeVerificationConfirm}
+        />
+      )}
       <div className="product-grid">
         {loading ? (
           <ProductGridSkeleton />
@@ -228,29 +261,33 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
               </div>
             </div>
           ))
-        ) :(!loading && (
-            <div className="no-products-card">
-              <div className="card">
-                <div className="card-body">
-                  <img src={notfound} alt="No products found" className="no-products-image" />
-                  {isFav && favProductIds.length === 0 ? (
-                    <>
-                      <h2>No favorite products found</h2>
-                      <p>You don't have any favorite products yet, take a look into our products, you're going to love it.</p>
-                    </>
-                  ) : (
-                    <>
-                      <h2>No products found</h2>
-                      <p>There are no products matching your filters at the moment. We are working on bringing more products to the store. Please check back later.</p>
-                    </>
-                  )}
-                </div>
+        ) : (!loading && (
+          <div className="no-products-card">
+            <div className="card">
+              <div className="card-body">
+                <img src={notfound} alt="No products found" className="no-products-image" />
+                {underage ? (
+                  <>
+                    <h2>Underage Notice</h2>
+                    <p>You are underage and cannot view alcohol products. Please wait until you are 18 or older to access these products.</p>
+                  </>
+                ) : isFav && favProductIds.length === 0 ? (
+                  <>
+                    <h2>No favorite products found</h2>
+                    <p>You don't have any favorite products yet, take a look into our products, you're going to love it.</p>
+                  </>
+                ) : (
+                  <>
+                    <h2>No products found</h2>
+                    <p>There are no products matching your filters at the moment. We are working on bringing more products to the store. Please check back later.</p>
+                  </>
+                )}
               </div>
             </div>
-          )
-        )}
+          </div>
+        ))}
       </div>
-      {products.length > productsPerPage && (
+      {totalPages > 1 && (
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
       )}
     </div>
