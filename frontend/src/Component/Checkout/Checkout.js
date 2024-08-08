@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Checkout.css";
 import axios from 'axios';
+import emptyCart from '../Assets/emptycart.png';
 
 export default function Checkout({ products, basket, setBasket }) {
   const [productQuantities, setProductQuantities] = useState({});
@@ -137,178 +138,188 @@ export default function Checkout({ products, basket, setBasket }) {
   return (
     <section className="checkout-section">
       <div className="checkout-container">
-        <div className="checkout-card">
-          <div className="checkout-card-body">
-            <h3 className="mb-5 pt-2 text-center fw-bold text-uppercase">
-              Your products
-            </h3>
+        {basket.length > 0 ? (
+          <>
+            <div className="checkout-card">
+              <div className="checkout-card-body">
+                <h3 className="mb-5 pt-2 text-center fw-bold text-uppercase">
+                  Your products
+                </h3>
 
-            <div className="basket-items-container">
-              {basket.map((item) => {
-                const product = getProductDetails(item.product_id);
-                return (
-                  <div key={item.product_id} className="d-flex align-items-center mb-5">
-                    <div className="checkout-card-item-container">
-                      <div className="checkout-card-image-container">
-                        <img
-                          src={product.image_url}
-                          className="checkout-card-image"
-                          alt="Product"
-                        />
-                        <a href="#!" className="remove-icon" onClick={() => handleRemoveFromCart(item.product_id)}>
-                          &times;
-                        </a>
-                      </div>
-                      <div className="flex-grow-1 ms-3">
-                        <h5 className="checkout-product-title">{product.name}</h5>
-                        <div className="d-flex align-items-center">
-                          <p className="checkout-price">{product.price}€</p>
-                          <div className="checkout-quantity">
-                            <button
-                              className="minus"
-                              onClick={() => handleQuantityChange(item.product_id, -1)}
-                            >
-                              -
-                            </button>
-                            <input
-                              className="quantity-input"
-                              min={0}
-                              value={productQuantities[item.product_id] || 0}
-                              readOnly
-                              type="number"
+                <div className="basket-items-container">
+                  {basket.map((item) => {
+                    const product = getProductDetails(item.product_id);
+                    return (
+                      <div key={item.product_id} className="d-flex align-items-center mb-5">
+                        <div className="checkout-card-item-container">
+                          <div className="checkout-card-image-container">
+                            <img
+                              src={product.image_url}
+                              className="checkout-card-image"
+                              alt="Product"
                             />
-                            <button
-                              className="plus"
-                              onClick={() => handleQuantityChange(item.product_id, 1)}
-                            >
-                              +
-                            </button>
+                            <a href="#!" className="remove-icon" onClick={() => handleRemoveFromCart(item.product_id)}>
+                              &times;
+                            </a>
+                          </div>
+                          <div className="flex-grow-1 ms-3">
+                            <h5 className="checkout-product-title">{product.name}</h5>
+                            <div className="d-flex align-items-center">
+                              <p className="checkout-price">{product.price}€</p>
+                              <div className="checkout-quantity">
+                                <button
+                                  className="minus"
+                                  onClick={() => handleQuantityChange(item.product_id, -1)}
+                                >
+                                  -
+                                </button>
+                                <input
+                                  className="quantity-input"
+                                  min={0}
+                                  value={productQuantities[item.product_id] || 0}
+                                  readOnly
+                                  type="number"
+                                />
+                                <button
+                                  className="plus"
+                                  onClick={() => handleQuantityChange(item.product_id, 1)}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <hr
-              className="mb-4"
-              style={{
-                height: "2px",
-                backgroundColor: "#1266f1",
-                opacity: 1,
-              }}
-            />
-
-            <div className="shipment-container">
-              <h5 className="fw-bold mb-0">Shipment:</h5>
-              <h5 className="fw-bold mb-0">{calculateShipmentCost()}€</h5>
-            </div>
-            <div className="product-total-container">
-              <h5 className="fw-bold mb-0">Product Total:</h5>
-              <h5 className="fw-bold mb-0">
-                {calculateProductTotal()}€
-              </h5>
-            </div>
-            <div className="total-container">
-              <h5 className="fw-bold mb-0">Total:</h5>
-              <h5 className="fw-bold mb-0">
-                {calculateTotal()}€
-              </h5>
-            </div>
-            <div className="free-shipment-message">
-              Free shipment if your purchase is 20€ or more.
-            </div>
-          </div>
-        </div>
-        <div className="checkout-card payment-section">
-          <div className="checkout-card-body">
-            <form className="payment-form" onSubmit={handleSubmit}>
-              <h3 className="mb-5 pt-2 text-center fw-bold text-uppercase">
-                Shipment Address
-              </h3>
-              <input
-                className="shipment-input"
-                placeholder="Street Address"
-                type="text"
-                name="street"
-                value={address.street}
-                onChange={(e) => handleInputChange(e, setAddress)}
-              />
-              <input
-                className="shipment-input"
-                placeholder="City"
-                type="text"
-                name="city"
-                value={address.city}
-                onChange={(e) => handleInputChange(e, setAddress)}
-              />
-              <input
-                className="shipment-input"
-                placeholder="Postal Code"
-                type="text"
-                name="postalCode"
-                value={address.postalCode}
-                onChange={(e) => handleInputChange(e, setAddress)}
-              />
-              <hr
-                className="mb-4 mt-4"
-                style={{
-                  height: "2px",
-                  backgroundColor: "#1266f1",
-                  opacity: 1,
-                }}
-              />
-              <h3 className="mb-5 pt-2 text-center fw-bold text-uppercase">
-                Payment
-              </h3>
-              <input
-                className="payment-input"
-                placeholder="Card number"
-                type="text"
-                name="cardNumber"
-                value={payment.cardNumber}
-                onChange={(e) => handleInputChange(e, setPayment)}
-              />
-              <input
-                className="payment-input"
-                placeholder="Name on card"
-                type="text"
-                name="nameOnCard"
-                value={payment.nameOnCard}
-                onChange={(e) => handleInputChange(e, setPayment)}
-              />
-              <div className="checkout-row">
-                <div className="checkout-col-md-6">
-                  <input
-                    className="payment-input"
-                    placeholder="Expiration"
-                    type="text"
-                    name="expiration"
-                    minLength="7"
-                    maxLength="7"
-                    value={payment.expiration}
-                    onChange={(e) => handleInputChange(e, setPayment)}
-                  />
+                    );
+                  })}
                 </div>
-                <div className="checkout-col-md-6">
-                  <input
-                    className="payment-input"
-                    placeholder="Cvv"
-                    type="text"
-                    name="cvv"
-                    minLength="3"
-                    maxLength="3"
-                    value={payment.cvv}
-                    onChange={(e) => handleInputChange(e, setPayment)}
-                  />
+
+                <hr
+                  className="mb-4"
+                  style={{
+                    height: "2px",
+                    backgroundColor: "#1266f1",
+                    opacity: 1,
+                  }}
+                />
+
+                <div className="shipment-container">
+                  <h5 className="fw-bold mb-0">Shipment:</h5>
+                  <h5 className="fw-bold mb-0">{calculateShipmentCost()}€</h5>
+                </div>
+                <div className="product-total-container">
+                  <h5 className="fw-bold mb-0">Product Total:</h5>
+                  <h5 className="fw-bold mb-0">
+                    {calculateProductTotal()}€
+                  </h5>
+                </div>
+                <div className="total-container">
+                  <h5 className="fw-bold mb-0">Total:</h5>
+                  <h5 className="fw-bold mb-0">
+                    {calculateTotal()}€
+                  </h5>
+                </div>
+                <div className="free-shipment-message">
+                  Free shipment if your purchase is 20€ or more.
                 </div>
               </div>
-              <button className="btn-buy-now" type="submit">Buy now</button>
-            </form>
+            </div>
+            <div className="checkout-card payment-section">
+              <div className="checkout-card-body">
+                <form className="payment-form" onSubmit={handleSubmit}>
+                  <h3 className="mb-5 pt-2 text-center fw-bold text-uppercase">
+                    Shipment Address
+                  </h3>
+                  <input
+                    className="shipment-input"
+                    placeholder="Street Address"
+                    type="text"
+                    name="street"
+                    value={address.street}
+                    onChange={(e) => handleInputChange(e, setAddress)}
+                  />
+                  <input
+                    className="shipment-input"
+                    placeholder="City"
+                    type="text"
+                    name="city"
+                    value={address.city}
+                    onChange={(e) => handleInputChange(e, setAddress)}
+                  />
+                  <input
+                    className="shipment-input"
+                    placeholder="Postal Code"
+                    type="text"
+                    name="postalCode"
+                    value={address.postalCode}
+                    onChange={(e) => handleInputChange(e, setAddress)}
+                  />
+                  <hr
+                    className="mb-4 mt-4"
+                    style={{
+                      height: "2px",
+                      backgroundColor: "#1266f1",
+                      opacity: 1,
+                    }}
+                  />
+                  <h3 className="mb-5 pt-2 text-center fw-bold text-uppercase">
+                    Payment
+                  </h3>
+                  <input
+                    className="payment-input"
+                    placeholder="Card number"
+                    type="text"
+                    name="cardNumber"
+                    value={payment.cardNumber}
+                    onChange={(e) => handleInputChange(e, setPayment)}
+                  />
+                  <input
+                    className="payment-input"
+                    placeholder="Name on card"
+                    type="text"
+                    name="nameOnCard"
+                    value={payment.nameOnCard}
+                    onChange={(e) => handleInputChange(e, setPayment)}
+                  />
+                  <div className="checkout-row">
+                    <div className="checkout-col-md-6">
+                      <input
+                        className="payment-input"
+                        placeholder="Expiration"
+                        type="text"
+                        name="expiration"
+                        minLength="7"
+                        maxLength="7"
+                        value={payment.expiration}
+                        onChange={(e) => handleInputChange(e, setPayment)}
+                      />
+                    </div>
+                    <div className="checkout-col-md-6">
+                      <input
+                        className="payment-input"
+                        placeholder="Cvv"
+                        type="text"
+                        name="cvv"
+                        minLength="3"
+                        maxLength="3"
+                        value={payment.cvv}
+                        onChange={(e) => handleInputChange(e, setPayment)}
+                      />
+                    </div>
+                  </div>
+                  <button className="btn-buy-now" type="submit">Buy now</button>
+                </form>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="empty-cart-container">
+            <img src={emptyCart} alt="Empty cart" className="empty-cart-image" />
+            <h2>Your cart is empty</h2>
+            <p>There are no products in your cart. Run to our store to get the best products at the best prices!</p>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

@@ -183,11 +183,67 @@
     color: white;
 }
 
+.no-products-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: 500px; /* Increase height to ensure all content fits */
+    background-color: #fff;
+    grid-column: span 3; /* Adjust the span according to your grid layout */
+    margin: 0 auto;
+}
+
+.no-products-card .card {
+    width: 100%;
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.no-products-card .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.no-products-card .no-products-image {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.no-products-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.no-products-card p {
+    font-size: 1rem;
+}
+
 /* Responsive adjustments */
 @media (max-width: 575px) {
     .btn {
         font-size: 0.75rem; /* Decrease font size for smaller screens */
         padding: 6px 8px; /* Adjust padding for smaller screens */
+    }
+
+    .no-products-card {
+        min-height: 300px; /* Adjust height for smaller screens */
+    }
+
+    .no-products-card h2 {
+        font-size: 1.25rem; /* Adjust font size for smaller screens */
+    }
+
+    .no-products-card p {
+        font-size: 0.875rem; /* Adjust font size for smaller screens */
     }
 }
 
