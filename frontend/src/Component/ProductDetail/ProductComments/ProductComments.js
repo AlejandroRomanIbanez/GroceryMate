@@ -12,7 +12,6 @@ const ProductComments = ({ reviews }) => {
             <div className="comment" key={index}>
               <div className="comment-body">
                 <h5>{review.Author}</h5>
-                <p className="small">Just now</p>
                 <p>{review.Comment}</p>
                 <div className="comment-footer">
                   <div className="comment-actions">

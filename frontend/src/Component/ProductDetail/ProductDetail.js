@@ -27,9 +27,19 @@ const ProductDetail = () => {
     fetchProductDetail();
   }, [productId]);
 
+  const calculateAverageRating = (reviews) => {
+    if (!reviews || reviews.length === 0) return 0;
+    console.log("Reviews:", reviews);
+    const totalRating = reviews.reduce((acc, review) => acc + review.Rating, 0);
+    return (totalRating / reviews.length).toFixed(1);
+  };
+
   if (!productDetailItem) {
     return <p>Loading...</p>;
   }
+
+  const averageRating = calculateAverageRating(productDetailItem.reviews);
+  console.log("Average Rating:", averageRating);
 
   return (
     <section className={styles.productDetailContainer}>
@@ -46,11 +56,11 @@ const ProductDetail = () => {
       <div className={styles.descriptionContainer}>
         <h2>{productDetailItem.name}</h2>
         <div className={styles.ratingContainer}>
-          <Rater total={5} interactive={false} rating={productDetailItem.rating || 0} className={styles.rating} />
+          <Rater total={5} interactive={false} rating={parseFloat(averageRating)} className={styles.rating} />
           <p className={styles.reviews}>({productDetailItem.reviews?.length || 0})</p>
         </div>
         <p className={styles.category}>Category: <span>{productDetailItem.category}</span></p>
-        <p className={styles.price}>${productDetailItem.price}</p>
+        <p className={styles.price}>{productDetailItem.price}€</p>
         <div className={styles.buttonContainer}>
           <button className={styles.addToCart}>
             <BiShoppingBag className={styles.icon} />
