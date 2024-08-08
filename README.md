@@ -3,7 +3,7 @@ GroceryMate
 
 Overview
 
-MyApp is a comprehensive e-commerce platform offering the following features:
+GroceryMate is a comprehensive e-commerce platform offering the following features:
 
     User Authentication: Register and login functionality.
     Protected Routes: All the routes that need to be authenticated will redirect to /auth

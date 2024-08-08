@@ -10,7 +10,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory }) =
   const [quantities, setQuantities] = useState({});
   const navigate = useNavigate();
 
-  const productsPerPage = 4;
+  const productsPerPage = 12;
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   useEffect(() => {

@@ -11,7 +11,7 @@ def get_all_products() -> List[Dict]:
     Returns:
         List[Dict]: A list of dictionaries, each representing a product.
     """
-    products_collection = mongo.db.products
+    products_collection = mongo.grocery.products
     products = list(products_collection.find())
     return [serialize_object_id(product) for product in products]
 
@@ -26,7 +26,7 @@ def get_product_by_id(product_id: str) -> Dict:
     Returns:
         Dict: A dictionary representing the product if found, otherwise an empty dictionary.
     """
-    products_collection = mongo.db.products
+    products_collection = mongo.grocery.products
     product = products_collection.find_one({"_id": ObjectId(product_id)})
     if product:
         return serialize_object_id(product)

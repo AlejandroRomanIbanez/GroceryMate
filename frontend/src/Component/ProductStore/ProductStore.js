@@ -110,6 +110,13 @@ const ProductStore = ({ products, isFav, basket, setBasket }) => {
     let sortedProducts = [...filteredProducts];
     let newSortDirection = sortDirection;
 
+    if (option === "Suggested") {
+      setFilteredProducts(isFav ? favProducts : products);
+      setSortOption("Suggested");
+      setSortDirection("asc");
+      return;
+    }
+
     if (option === sortOption) {
       newSortDirection = sortDirection === "asc" ? "desc" : "asc";
     } else {

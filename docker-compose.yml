@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build:
@@ -19,7 +17,7 @@ services:
       dockerfile: frontend/Dockerfile
     container_name: frontend
     ports:
-      - "80:80"  # Nginx uses port 80 by default
+      - "80:80"
     networks:
       - app-network
 

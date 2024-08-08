@@ -29,17 +29,29 @@
 }
 
 .card-header {
-    padding: 15px;
+    padding: 10px 15px; /* Adjust padding as needed */
     flex-shrink: 0;
+    height: 80px; /* Fix height to accommodate one or two lines */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .card-header p {
     font-weight: bold; /* Make product name bold */
+    margin: 0;
+    word-wrap: break-word;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Show up to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
 }
 
 .card-img-top {
     width: 100%;
-    height: 200px;
+    height: 170px; /* Adjust height to balance with title */
     object-fit: cover;
     flex-shrink: 0;
 }
@@ -134,8 +146,8 @@
 
 .btn {
     display: inline-block;
-    padding: 10px 15px;
-    font-size: 0.875rem;
+    padding: 8px 10px; /* Adjust padding */
+    font-size: 0.75rem; /* Adjust font size */
     border-radius: 5px;
     text-align: center;
     width: 100%;
@@ -169,6 +181,14 @@
 .btn-favorite {
     background-color: #66ccff;
     color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 575px) {
+    .btn {
+        font-size: 0.75rem; /* Decrease font size for smaller screens */
+        padding: 6px 8px; /* Adjust padding for smaller screens */
+    }
 }
 
 /* Responsive Grid Layout */

@@ -9,9 +9,7 @@ const ProductHeader = ({ sortOption, sortDirection, sortProducts }) => {
 
   const handleOptionClick = (option) => {
     sortProducts(option);
-    if (option === "Suggested") {
-      setIsSelectOpen(false);
-    }
+    setIsSelectOpen(false);
   };
 
   const toggleSelectOpen = () => {

@@ -16,16 +16,18 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             Previous
           </button>
         </li>
-        {pages.map(page => (
-          <li key={page} className={`pagination-item ${page === currentPage ? 'active' : ''}`}>
-            <button 
-              className="pagination-link" 
-              onClick={() => onPageChange(page)}
-            >
-              {page}
-            </button>
-          </li>
-        ))}
+        <div className="page-numbers">
+          {pages.map(page => (
+            <li key={page} className={`pagination-item ${page === currentPage ? 'active' : ''}`}>
+              <button 
+                className="pagination-link" 
+                onClick={() => onPageChange(page)}
+              >
+                {page}
+              </button>
+            </li>
+          ))}
+        </div>
         <li className={`pagination-item ${currentPage === totalPages ? 'disabled' : ''}`}>
           <button 
             className="pagination-link" 

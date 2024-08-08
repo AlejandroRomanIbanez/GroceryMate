@@ -15,7 +15,7 @@ def add_to_favorites(user_id: str, product_id: str) -> dict:
     Returns:
         dict: The raw result of the update operation.
     """
-    users_collection = mongo.db.users
+    users_collection = mongo.grocery.users
     result = users_collection.update_one(
         {"_id": ObjectId(user_id)},
         {"$addToSet": {"fav_products": product_id}}
@@ -34,7 +34,7 @@ def remove_from_favorites(user_id: str, product_id: str) -> dict:
     Returns:
         dict: The raw result of the update operation.
     """
-    users_collection = mongo.db.users
+    users_collection = mongo.grocery.users
     result = users_collection.update_one(
         {"_id": ObjectId(user_id)},
         {"$pull": {"fav_products": product_id}}
@@ -52,8 +52,8 @@ def get_user_favorites(user_id: str) -> list:
     Returns:
         list: A list of dictionaries, each representing a favorite product.
     """
-    users_collection = mongo.db.users
-    products_collection = mongo.db.products
+    users_collection = mongo.grocery.users
+    products_collection = mongo.grocery.products
     user = users_collection.find_one({"_id": ObjectId(user_id)})
     if user and 'fav_products' in user:
         product_ids = [ObjectId(pid) for pid in user["fav_products"]]
@@ -73,7 +73,7 @@ def sync_basket_service(user_id: str, basket: List[Dict]) -> dict:
     Returns:
         dict: A message indicating the result of the synchronization.
     """
-    users_collection = mongo.db.users
+    users_collection = mongo.grocery.users
     result = users_collection.update_one(
         {"_id": ObjectId(user_id)},
         {"$set": {"basket": basket}}
@@ -94,7 +94,7 @@ def get_user_basket(user_id: str) -> List[Dict]:
     Returns:
         List[Dict]: The user's basket.
     """
-    users_collection = mongo.db.users
+    users_collection = mongo.grocery.users
     user = users_collection.find_one({"_id": ObjectId(user_id)})
 
     if user and 'basket' in user:
@@ -114,7 +114,7 @@ def remove_from_basket_service(user_id: str, product_id: str) -> dict:
     Returns:
         dict: A message indicating the result of the removal.
     """
-    users_collection = mongo.db.users
+    users_collection = mongo.grocery.users
     result = users_collection.update_one(
         {"_id": ObjectId(user_id)},
         {"$pull": {"basket": {"product_id": product_id}}}
