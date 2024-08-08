@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import notfound from '../../Assets/no-product-found.png';
 import ProductGridSkeleton from '../../Skeleton/ProductGridSkeleton';
+import { toast, Toaster } from 'react-hot-toast';
 
 const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, resetPage }) => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,17 +19,20 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
 
   useEffect(() => {
     const fetchFavorites = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setFavProductIds(response.data.map(product => product._id));
-      } catch (error) {
-        console.error('Failed to fetch favorites:', error);
+      if (isFav) {
+        try {
+          const token = localStorage.getItem('token');
+          if (!token) return;
+          const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setFavProductIds(response.data.map(product => product._id));
+          setLoading(false);
+        } catch (error) {
+          console.error('Failed to fetch favorites:', error);
+        }
       }
     };
 
@@ -56,10 +60,10 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
   }, [resetPage]);
 
   useEffect(() => {
-    if (products.length > 0 || !loading) {
+    if (products.length > 0) {
       setLoading(false);
     }
-  }, [products, loading]);
+  }, [products]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -72,7 +76,6 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
       return;
     }
     if (favProductIds.includes(productId)) {
-      // Remove from favorites
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites/remove`,
@@ -85,9 +88,11 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
         );
         if (response.status === 200) {
           setFavProductIds(favProductIds.filter(id => id !== productId));
+          toast.success('Removed from favorites!');
         }
       } catch (error) {
         console.error('Failed to remove from favorites:', error);
+        toast.error("Failed to remove from favorites.");
       }
     } else {
       // Add to favorites
@@ -103,9 +108,11 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
         );
         if (response.status === 201) {
           setFavProductIds([...favProductIds, productId]);
+          toast.success('Added to favorites!');
         }
       } catch (error) {
         console.error('Failed to add to favorites:', error);
+        toast.error("Failed to add to favorites.");
       }
     }
   };
@@ -120,6 +127,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
   const handleAddToCart = async (product) => {
     const token = localStorage.getItem('token');
     if (!token) {
+      toast.error("You need to be logged in to add items to the cart.");
       navigate('/auth');
       return;
     }
@@ -143,8 +151,10 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
           }
         }
       );
+      toast.success('Item added to cart!');
     } catch (error) {
       console.error('Failed to update basket:', error);
+      toast.error("Failed to add item to cart.");
     }
   };
 
@@ -154,6 +164,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
 
   return (
     <div className="container">
+      <Toaster position="bottom-center" reverseOrder={false} />
       <div className="product-grid">
         {loading ? (
           <ProductGridSkeleton />
@@ -217,14 +228,22 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
               </div>
             </div>
           ))
-        ) : (
-          !loading && (
+        ) :(!loading && (
             <div className="no-products-card">
               <div className="card">
                 <div className="card-body">
                   <img src={notfound} alt="No products found" className="no-products-image" />
-                  <h2>No products found</h2>
-                  <p>There are no products matching your filters at the moment. We are working on bringing more products to the store. Please check back later.</p>
+                  {isFav && favProductIds.length === 0 ? (
+                    <>
+                      <h2>No favorite products found</h2>
+                      <p>You don't have any favorite products yet, take a look into our products, you're going to love it.</p>
+                    </>
+                  ) : (
+                    <>
+                      <h2>No products found</h2>
+                      <p>There are no products matching your filters at the moment. We are working on bringing more products to the store. Please check back later.</p>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

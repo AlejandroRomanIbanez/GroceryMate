@@ -111,13 +111,13 @@ export default function Checkout({ products, basket, setBasket }) {
 
   const calculateTotal = () => {
     const productTotal = calculateProductTotal();
-    const shipmentCost = freeShippingAchieved || productTotal >= 20 ? 0 : 10;
+    const shipmentCost = freeShippingAchieved || productTotal >= 20 ? 0 : 5;
     return (parseFloat(productTotal) + shipmentCost).toFixed(2);
   };
 
   const calculateShipmentCost = () => {
     const productTotal = calculateProductTotal();
-    return freeShippingAchieved || productTotal >= 20 ? 0 : 10;
+    return freeShippingAchieved || productTotal >= 20 ? 0 : 5;
   };
 
   const checkForFreeShipping = (currentBasket) => {
