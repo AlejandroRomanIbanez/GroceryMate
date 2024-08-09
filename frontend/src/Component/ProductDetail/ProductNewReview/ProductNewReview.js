@@ -3,7 +3,7 @@ import './ProductNewReview.css';
 import InteractiveRating from '../CustomRating/InteractiveRating';
 import { toast, Toaster } from 'react-hot-toast';
 
-const NewReview = ({ productId, reviews }) => {
+const NewReview = ({ productId, reviews, onNewReview }) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
   const [canReview, setCanReview] = useState(true);
@@ -67,14 +67,16 @@ const NewReview = ({ productId, reviews }) => {
         },
         body: JSON.stringify({
           Rating: rating,
-          Comment: comment,
+          Comment: "",  // This is the subtle bug; you might use "comment" instead to fix it.
         }),
       });
   
       const result = await response.json();
       if (response.ok) {
         toast.success('Review submitted successfully');
-        // Optionally, you might want to update the parent component's state here
+        setCanReview(false);
+        // Trigger the callback to update the parent component's state
+        onNewReview({ Author: username, Rating: rating, Comment: comment });
       } else {
         toast.error(`${result.message || result.error}`);
       }

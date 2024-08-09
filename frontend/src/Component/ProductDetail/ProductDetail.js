@@ -10,6 +10,7 @@ const ProductDetail = () => {
   const { productId } = useParams();
   const [productDetailItem, setProductDetailItem] = useState(null);
   const [userPurchasedProducts, setUserPurchasedProducts] = useState([]);
+  const [hasReviewed, setHasReviewed] = useState(false);
   const [canLeaveReview, setCanLeaveReview] = useState(false);
 
   useEffect(() => {
@@ -44,9 +45,20 @@ const ProductDetail = () => {
 
   useEffect(() => {
     if (productDetailItem) {
-      setCanLeaveReview(userPurchasedProducts.includes(productId));
+      const purchased = userPurchasedProducts.includes(productId);
+      setCanLeaveReview(purchased);
+      setHasReviewed(purchased && productDetailItem.reviews.some(review => review.Author === localStorage.getItem('username')));
     }
   }, [userPurchasedProducts, productDetailItem, productId]);
+
+  const handleNewReview = (newReview) => {
+    setProductDetailItem((prevItem) => ({
+      ...prevItem,
+      reviews: [...prevItem.reviews, newReview],
+    }));
+    setCanLeaveReview(false);
+    setHasReviewed(true);
+  };
 
   const calculateAverageRating = (reviews) => {
     if (!reviews || reviews.length === 0) return 0;
@@ -68,6 +80,7 @@ const ProductDetail = () => {
           review => review.Author !== authorName
         )
       }));
+      setHasReviewed(false);
     } catch (error) {
       console.error("Error deleting review:", error);
     }
@@ -118,11 +131,20 @@ const ProductDetail = () => {
         <p className="price">{productDetailItem.price}€</p>
       </div>
       {canLeaveReview ? (
-        <NewReview productId={productId} reviews={productDetailItem.reviews || []} />
+        hasReviewed ? (
+          <div className="reviewRestriction">
+            <p>You have already reviewed this product.</p>
+          </div>
+        ) : (
+          <NewReview 
+            productId={productId} 
+            reviews={productDetailItem.reviews || []}  
+            onNewReview={handleNewReview}
+          />
+        )
       ) : (
         <div className="reviewRestriction">
-          <img src="path_to_template_image" alt="No Purchase" className="restrictionImage" />
-          <p>You need to buy this product to leave us a feedback!</p>
+          <p>You need to buy this product to tell us your opinion!</p>
         </div>
       )}
       <ProductComments 

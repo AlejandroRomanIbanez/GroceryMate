@@ -85,7 +85,7 @@ const ProductComments = ({ reviews, onDelete, onEdit }) => {
             <div className="comment" key={index}>
               <div className="comment-body">
                 <div className="comment-header">
-                  <h5>{review.Author}</h5>
+                  <h5><strong>{review.Author}</strong></h5>
                   {review.Author === username && (
                     <div className="menu-icon" onClick={() => toggleDropdown(index)}>...</div>
                   )}
