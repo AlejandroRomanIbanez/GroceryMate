@@ -1,15 +1,36 @@
-.ratingContainer {
+.custom-rating {
     display: flex;
-    align-items: center;
   }
   
-  .star {
-    font-size: 24px;
-    color: #ccc;
-    margin-right: 4px;
+  .custom-rating .star {
+    font-size: 20px;
+    margin-right: 5px;
+    position: relative;
   }
   
-  .filled {
-    color: #ffd700;
+  .custom-rating .star.full {
+    background: linear-gradient(90deg, #66ccff, #004494);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .custom-rating .star.half {
+    background: linear-gradient(90deg, #66ccff, #004494);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+  }
+  
+  .custom-rating .star.half:after {
+    content: '\2605'; /* unicode for star */
+    color: #ddd; /* Gray for the unfilled part */
+    position: absolute;
+    left: 50%;
+    overflow: hidden;
+    width: 50%;
+  }
+  
+  .custom-rating .star.empty {
+    color: #ddd; /* Gray color for unfilled stars */
   }
   

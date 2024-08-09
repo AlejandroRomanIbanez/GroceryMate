@@ -1,18 +1,21 @@
-// CustomRating.js
 import React from 'react';
-import styles from './CustomRating.css'; // Import custom styles
+import './CustomRating.css';
 
 const CustomRating = ({ rating }) => {
-  const stars = [...Array(5)].map((_, index) => (
-    <span
-      key={index}
-      className={`${styles.star} ${index < rating ? styles.filled : ''}`}
-    >
-      ★
-    </span>
-  ));
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 !== 0;
 
-  return <div className={styles.ratingContainer}>{stars}</div>;
+  return (
+    <div className="custom-rating">
+      {[...Array(fullStars)].map((_, i) => (
+        <span key={i} className="star full">&#9733;</span>
+      ))}
+      {halfStar && <span className="star half">&#9733;</span>}
+      {[...Array(5 - fullStars - (halfStar ? 1 : 0))].map((_, i) => (
+        <span key={i} className="star empty">&#9733;</span>
+      ))}
+    </div>
+  );
 };
 
 export default CustomRating;
