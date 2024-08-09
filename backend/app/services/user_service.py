@@ -128,11 +128,9 @@ def remove_from_basket_service(user_id: str, product_id: str) -> dict:
 def add_product_to_purchased(user_id: str, product_ids: List[str]) -> dict:
     """
     Adds a product to the user's set of purchased products.
-
     Args:
         user_id (str): The ID of the user.
         product_id (str): The ID of the product to add.
-
     Returns:
         dict: The raw result of the update operation.
     """
@@ -147,10 +145,8 @@ def add_product_to_purchased(user_id: str, product_ids: List[str]) -> dict:
 def get_user_purchased_products(user_id: str) -> List[Dict]:
     """
     Retrieves the user's list of purchased products from the database.
-
     Args:
         user_id (str): The ID of the user.
-
     Returns:
         List[Dict]: A list of dictionaries representing purchased products.
     """

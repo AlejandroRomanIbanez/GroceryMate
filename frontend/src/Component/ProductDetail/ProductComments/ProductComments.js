@@ -1,6 +1,5 @@
 import React from 'react';
-import Rater from 'react-rater';
-import 'react-rater/lib/react-rater.css';
+import CustomRating from '../CustomRating/CustomRating'; // Import the custom rating component
 import './ProductComments.css';
 
 const ProductComments = ({ reviews }) => {
@@ -17,8 +16,7 @@ const ProductComments = ({ reviews }) => {
                 <p>{review.Comment}</p>
                 <div className="comment-footer">
                   <div className="comment-actions">
-                    <div className="rating">
-                      <Rater total={5} rating={review.Rating} interactive={false} />
+                      <CustomRating rating={review.Rating} />
                       <span className="small">({review.Rating.toFixed(1)})</span>
                     </div>
                   </div>

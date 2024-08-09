@@ -14,7 +14,7 @@ class User(BaseModel):
     password: str = Field(..., min_length=6)
     fav_products: List[str] = Field(default_factory=list)
     basket: List[BasketItem] = Field(default_factory=list)
-    purchased_products: List[str] = Field(default_factory=set)
+    purchased_products: List[str] = Field(default_factory=list)
 
     def to_dict(self) -> Dict:
         return to_dict(self)

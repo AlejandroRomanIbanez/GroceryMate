@@ -52,34 +52,3 @@
     color: #aaa;
   }
   
-  .link-muted {
-    color: #aaa;
-    text-decoration: none;
-  }
-  
-  .link-muted:hover {
-    color: #1266f1;
-  }
-  
-  .me-2 {
-    margin-right: 0.5rem;
-  }
-  
-  .me-1 {
-    margin-right: 0.25rem;
-  }
-  
-  /* Custom gradient star colors */
-  .react-rater-star.is-active,
-  .react-rater-star.is-active-half:before {
-    background: linear-gradient(90deg, #66ccff, #0056b3);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-  .react-rater-star.is-active-half:before {
-    background: linear-gradient(90deg, #66ccff, #0056b3);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
