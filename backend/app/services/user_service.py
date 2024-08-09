@@ -124,3 +124,39 @@ def remove_from_basket_service(user_id: str, product_id: str) -> dict:
     else:
         return {"message": "Product not found in the basket."}
 
+
+def add_product_to_purchased(user_id: str, product_ids: List[str]) -> dict:
+    """
+    Adds a product to the user's set of purchased products.
+
+    Args:
+        user_id (str): The ID of the user.
+        product_id (str): The ID of the product to add.
+
+    Returns:
+        dict: The raw result of the update operation.
+    """
+    users_collection = mongo.grocery.users
+    result = users_collection.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$addToSet": {"purchased_products": {"$each": product_ids}}}
+    )
+    return result.raw_result
+
+
+def get_user_purchased_products(user_id: str) -> List[Dict]:
+    """
+    Retrieves the user's list of purchased products from the database.
+
+    Args:
+        user_id (str): The ID of the user.
+
+    Returns:
+        List[Dict]: A list of dictionaries representing purchased products.
+    """
+    users_collection = mongo.grocery.users
+    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    if user and 'purchased_products' in user:
+        id_products = list(user["purchased_products"])
+        return id_products
+    return []

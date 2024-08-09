@@ -162,6 +162,10 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
     }
   };
 
+  const handleProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
   // Filter products based on user age verification and underage status
   const filteredProducts = (userAgeVerified && !underage) 
     ? products 
@@ -203,12 +207,20 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
           <ProductGridSkeleton />
         ) : currentProducts.length > 0 ? (
           currentProducts.map(product => (
-            <div className="product-card" key={product._id}>
-              <div className="card">
-                <div className="card-header">
+            <div 
+            className="product-card"
+            key={product._id}
+            >
+              <div className="card" >
+                <div className="card-header" onClick={() => handleProductClick(product._id)}>
                   <p className="lead">{product.name}</p>
                 </div>
-                <img src={product.image_url} alt={product.name} className="card-img-top" />
+                <img 
+                  src={product.image_url}
+                  alt={product.name}
+                  className="card-img-top"
+                  onClick={() => handleProductClick(product._id)}
+                  />
                 <div className="card-body">
                   <div className="content">
                     <p className="category">

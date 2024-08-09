@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { AiOutlineHeart } from "react-icons/ai";
-import { BiShoppingBag } from "react-icons/bi";
-import ReactImageGallery from "react-image-gallery";
-import Rater from "react-rater";
-import "react-rater/lib/react-rater.css";
-import styles from './ProductDetail.module.css';
-import ProductComments from './ProductComments/ProductComments';
+import Rater from 'react-rater';
+import 'react-rater/lib/react-rater.css';
+import ReactImageGallery from 'react-image-gallery';
 import NewReview from './ProductNewReview/NewReview';
+import ProductComments from './ProductComments/ProductComments';
+import styles from './ProductDetail.module.css';
 
 const ProductDetail = () => {
   const { productId } = useParams();
   const [productDetailItem, setProductDetailItem] = useState(null);
+  const [userPurchasedProducts, setUserPurchasedProducts] = useState([]);
+  const [canLeaveReview, setCanLeaveReview] = useState(false);
 
   useEffect(() => {
     const fetchProductDetail = async () => {
@@ -24,12 +24,34 @@ const ProductDetail = () => {
       }
     };
 
+    const fetchUserPurchasedProducts = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/purchased-products`, {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          });
+          setUserPurchasedProducts(response.data || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch purchased products:", error);
+      }
+    };
+
     fetchProductDetail();
+    fetchUserPurchasedProducts();
   }, [productId]);
+
+  useEffect(() => {
+    if (productDetailItem) {
+      setCanLeaveReview(userPurchasedProducts.includes(productId));
+    }
+  }, [userPurchasedProducts, productDetailItem, productId]);
 
   const calculateAverageRating = (reviews) => {
     if (!reviews || reviews.length === 0) return 0;
-    console.log("Reviews:", reviews);
     const totalRating = reviews.reduce((acc, review) => acc + review.Rating, 0);
     return (totalRating / reviews.length).toFixed(1);
   };
@@ -39,7 +61,6 @@ const ProductDetail = () => {
   }
 
   const averageRating = calculateAverageRating(productDetailItem.reviews);
-  console.log("Average Rating:", averageRating);
 
   return (
     <section className={styles.productDetailContainer}>
@@ -61,18 +82,15 @@ const ProductDetail = () => {
         </div>
         <p className={styles.category}>Category: <span>{productDetailItem.category}</span></p>
         <p className={styles.price}>{productDetailItem.price}€</p>
-        <div className={styles.buttonContainer}>
-          <button className={styles.addToCart}>
-            <BiShoppingBag className={styles.icon} />
-            Add to cart
-          </button>
-          <button className={styles.wishlist}>
-            <AiOutlineHeart className={styles.icon} />
-            Wishlist
-          </button>
-        </div>
       </div>
-      <NewReview />
+      {canLeaveReview ? (
+        <NewReview productId={productId} />
+      ) : (
+        <div className={styles.reviewRestriction}>
+          <img src="path_to_template_image" alt="No Purchase" className={styles.restrictionImage} />
+          <p>You need to buy this product to leave us a feedback!</p>
+        </div>
+      )}
       <ProductComments reviews={productDetailItem.reviews || []} />
     </section>
   );

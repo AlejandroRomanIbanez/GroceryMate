@@ -4,11 +4,13 @@ import 'react-rater/lib/react-rater.css';
 import './ProductComments.css';
 
 const ProductComments = ({ reviews }) => {
+  const reversedReviews = [...reviews].reverse();
+
   return (
     <section className="product-comments">
-      <div className="container">
-        {reviews.length > 0 ? (
-          reviews.map((review, index) => (
+      <div className="comments-container">
+        {reversedReviews.length > 0 ? (
+          reversedReviews.map((review, index) => (
             <div className="comment" key={index}>
               <div className="comment-body">
                 <h5>{review.Author}</h5>
