@@ -9,6 +9,7 @@ class ReviewModel(BaseModel):
     Rating: float = Field(..., ge=1, le=5, description="Rating of the product, between 1 and 5")
     Comment: str = Field(..., max_length=500, description="Review comment, up to 500 characters")
 
+
 class ProductCategory(Enum):
     FRUITS = "Fruits"
     VEGETABLES = "Vegetables"

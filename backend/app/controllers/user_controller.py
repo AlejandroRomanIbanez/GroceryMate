@@ -112,9 +112,6 @@ def remove_from_basket():
 def purchase_product():
     """
     Handles the purchase of a product by adding it to the user's purchased products.
-    Returns:
-        JSON: A JSON response indicating success or failure.
-    """
     user_id = get_jwt_identity()
     product_ids = request.json.get("purchased_products")
 
@@ -129,8 +126,6 @@ def purchase_product():
 def get_purchased_products():
     """
     Retrieves the user's list of purchased products.
-    Returns:
-        JSON: A JSON response containing the list of purchased products.
     """
     user_id = get_jwt_identity()
     purchased_products = get_user_purchased_products(user_id)

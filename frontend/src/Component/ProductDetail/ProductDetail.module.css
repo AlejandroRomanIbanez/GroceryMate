@@ -1,0 +1,60 @@
+:root {
+  --gold: #fde047;
+}
+
+.productDetailContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px solid #ccc;
+}
+
+.imageGalleryContainer,
+.descriptionContainer {
+  padding: 20px;
+}
+
+.descriptionContainer h2 {
+  padding-top: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.descriptionContainer .category {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.descriptionContainer .price {
+  font-size: 40px;
+  font-weight: bold;
+  color: #007bff;
+  margin-top: 10px;
+}
+
+.ratingContainer {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.ratingContainer .rating {
+  display: flex;
+  align-items: center;
+}
+
+.ratingContainer .reviews {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #666;
+}
+
+.react-rater-star.is-active-half:before {
+  color: var(--gold) !important;
+}
+
+.react-rater-star.is-active {
+  color: var(--gold) !important;
+}

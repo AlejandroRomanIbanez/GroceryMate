@@ -193,7 +193,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
   };
 
   return (
-    <div className="container">
+    <div className="product-container">
       <Toaster position="bottom-center" reverseOrder={false} />
       {!userAgeVerified && (
         <AgeVerificationModal
