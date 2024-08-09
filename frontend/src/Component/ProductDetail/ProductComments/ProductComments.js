@@ -16,7 +16,6 @@ const ProductComments = ({ reviews }) => {
                 <p>{review.Comment}</p>
                 <div className="comment-footer">
                   <div className="comment-actions">
-                    <div className="rating">
                       <CustomRating rating={review.Rating} />
                       <span className="small">({review.Rating.toFixed(1)})</span>
                     </div>
