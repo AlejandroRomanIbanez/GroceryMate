@@ -1,6 +1,22 @@
 from flask import jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
-from app.services.user_service import add_to_favorites, get_user_favorites, remove_from_favorites, sync_basket_service, get_user_basket, remove_from_basket_service, add_product_to_purchased, get_user_purchased_products
+from app.services.user_service import add_to_favorites, get_user_favorites, remove_from_favorites, sync_basket_service, \
+    get_user_basket, remove_from_basket_service, add_product_to_purchased, get_user_purchased_products, get_user_info
+
+
+@jwt_required()
+def get_current_user_info():
+    """
+    Retrieves the current user's information.
+
+    Returns:
+        JSON: A JSON response containing the user's information.
+    """
+    user_id = get_jwt_identity()
+    user_info = get_user_info(user_id)
+    if user_info:
+        return jsonify(user_info), 200
+    return jsonify({"error": "User not found"}), 404
 
 
 @jwt_required()

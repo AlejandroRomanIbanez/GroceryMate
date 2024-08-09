@@ -4,6 +4,25 @@ from ..helpers import serialize_object_id
 from typing import List, Dict
 
 
+def get_user_info(user_id: str) -> dict:
+    """
+    Retrieves the user's information from the database.
+
+    Args:
+        user_id (str): The ID of the user.
+
+    Returns:
+        dict: A dictionary containing the user's information.
+    """
+    users_collection = mongo.grocery.users
+    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    if user:
+        return {
+            "username": user.get("username"),
+        }
+    return {}
+
+
 def add_to_favorites(user_id: str, product_id: str) -> dict:
     """
     Adds a product to the user's list of favorite products in the database.
