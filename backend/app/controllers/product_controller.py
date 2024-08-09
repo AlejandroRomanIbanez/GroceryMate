@@ -1,5 +1,7 @@
 from flask import jsonify, request
+from pydantic import ValidationError
 
+from app.helpers import format_validation_error
 from app.models.product_model import ReviewModel
 from app.services.product_service import get_all_products, get_product_by_id, add_review_to_product, \
     remove_review_from_product, update_product_review
@@ -59,8 +61,11 @@ def add_review(product_id):
         review_data = request.json
         review_data['Author'] = user_info.get('username', 'Anonymous')
 
-        # Create a ReviewModel instance
-        review_model = ReviewModel(**review_data)
+        try:
+            review_model = ReviewModel(**review_data)
+        except ValidationError as e:
+            print("Validation error:", e)
+            return jsonify({"message": format_validation_error(e)}), 400
 
         # Add review to the product
         response = add_review_to_product(product_id, review_model)
@@ -72,9 +77,9 @@ def add_review(product_id):
 @jwt_required()
 def delete_review(product_id):
     try:
-        review_index = int(request.args.get('index'))
-        author_name = request.args.get('author_name')
-        response = remove_review_from_product(product_id, review_index, author_name)
+        data = request.get_json()
+        author_name = data.get('author_name')
+        response = remove_review_from_product(product_id, author_name)
         return jsonify(response), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -83,10 +88,27 @@ def delete_review(product_id):
 @jwt_required()
 def update_review(product_id):
     try:
-        review_index = int(request.args.get('index'))
-        author_name = request.args.get('author_name')
-        updated_data = ReviewModel(**request.json)
-        response = update_product_review(product_id, review_index, author_name, updated_data)
+        data = request.json
+        author_name = data.get('author_name')
+
+        if not author_name:
+            return jsonify({"error": "Author name is required"}), 400
+        try:
+            rating = int(data.get("Rating"))
+            if rating < 1 or rating > 5:
+                return jsonify({"error": "Rating must be between 1 and 5"}), 400
+        except (ValueError, TypeError):
+            return jsonify({"error": "Invalid rating value"}), 400
+
+        updated_data = {
+            "Rating": rating,
+            "Comment": data.get("Comment")
+        }
+
+        if updated_data["Comment"] is None:
+            return jsonify({"error": "Comment is required"}), 400
+
+        response = update_product_review(product_id, author_name, updated_data)
         return jsonify(response), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400

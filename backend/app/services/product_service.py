@@ -48,6 +48,13 @@ def add_review_to_product(product_id: str, review_data: ReviewModel) -> Dict:
     products_collection = mongo.grocery.products
     review_dict = review_data.dict()
 
+    existing_review = products_collection.find_one(
+        {"_id": ObjectId(product_id), "reviews.Author": review_dict['Author']}
+    )
+
+    if existing_review:
+        return {"error": "User has already reviewed this product"}
+
     result = products_collection.update_one(
         {"_id": ObjectId(product_id)},
         {"$push": {"reviews": review_dict}}
@@ -58,12 +65,12 @@ def add_review_to_product(product_id: str, review_data: ReviewModel) -> Dict:
     return {"error": "Product not found or review not added"}
 
 
-def remove_review_from_product(product_id: str, review_index: int, author_name: str) -> Dict:
+def remove_review_from_product(product_id: str, author_name: str) -> Dict:
     products_collection = mongo.grocery.products
 
     result = products_collection.update_one(
-        {"_id": ObjectId(product_id), "reviews.author_name": author_name},
-        {"$pull": {"reviews": {"author_name": author_name, "index": review_index}}}
+        {"_id": ObjectId(product_id), "reviews.Author": author_name},
+        {"$pull": {"reviews": {"Author": author_name}}}
     )
 
     if result.modified_count > 0:
@@ -71,13 +78,17 @@ def remove_review_from_product(product_id: str, review_index: int, author_name: 
     return {"error": "Product or review not found"}
 
 
-def update_product_review(product_id: str, review_index: int, author_name: str, updated_data: ReviewModel) -> Dict:
+def update_product_review(product_id: str, author_name: str, updated_data: Dict) -> Dict:
     products_collection = mongo.grocery.products
-    updated_dict = updated_data.dict()
+
+    update_fields = {
+        "reviews.$.Rating": updated_data["Rating"],
+        "reviews.$.Comment": updated_data["Comment"]
+    }
 
     result = products_collection.update_one(
-        {"_id": ObjectId(product_id), "reviews.author_name": author_name},
-        {"$set": {f"reviews.{review_index}": updated_dict}}
+        {"_id": ObjectId(product_id), "reviews.Author": author_name},
+        {"$set": update_fields}
     )
 
     if result.modified_count > 0:

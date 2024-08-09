@@ -7,5 +7,5 @@ product_bp.route('/all_products', methods=['GET'])(fetch_all_products)
 product_bp.route('/<product_id>', methods=['GET'])(get_single_product)
 
 product_bp.route('/<product_id>/add-review', methods=['POST'])(add_review)
-product_bp.route('/<product_id>/-remove-review', methods=['DELETE'])(delete_review)
+product_bp.route('/<product_id>/remove-review', methods=['DELETE'])(delete_review)
 product_bp.route('/<product_id>/update-review', methods=['PUT'])(update_review)

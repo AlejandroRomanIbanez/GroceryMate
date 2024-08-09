@@ -54,6 +54,49 @@ const ProductDetail = () => {
     return (totalRating / reviews.length).toFixed(1);
   };
 
+  const handleDeleteReview = async (authorName) => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_BACKEND_SERVER}/api/products/${productId}/remove-review`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        data: { author_name: authorName }
+      });
+      setProductDetailItem(prevItem => ({
+        ...prevItem,
+        reviews: prevItem.reviews.filter(
+          review => review.Author !== authorName
+        )
+      }));
+    } catch (error) {
+      console.error("Error deleting review:", error);
+    }
+  };
+
+  const handleEditReview = async (authorName, newRating, newComment) => {
+    try {
+      await axios.put(`${process.env.REACT_APP_BACKEND_SERVER}/api/products/${productId}/update-review`, {
+        author_name: authorName,
+        Rating: newRating,
+        Comment: newComment
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      setProductDetailItem(prevItem => ({
+        ...prevItem,
+        reviews: prevItem.reviews.map(review =>
+          review.Author === authorName
+            ? { ...review, Rating: newRating, Comment: newComment }
+            : review
+        )
+      }));
+    } catch (error) {
+      console.error("Error updating review:", error);
+    }
+  };
+
   if (!productDetailItem) {
     return <p>Loading...</p>;
   }
@@ -75,14 +118,18 @@ const ProductDetail = () => {
         <p className="price">{productDetailItem.price}€</p>
       </div>
       {canLeaveReview ? (
-        <NewReview productId={productId} />
+        <NewReview productId={productId} reviews={productDetailItem.reviews || []} />
       ) : (
         <div className="reviewRestriction">
           <img src="path_to_template_image" alt="No Purchase" className="restrictionImage" />
           <p>You need to buy this product to leave us a feedback!</p>
         </div>
       )}
-      <ProductComments reviews={productDetailItem.reviews || []} />
+      <ProductComments 
+        reviews={productDetailItem.reviews || []} 
+        onDelete={handleDeleteReview} 
+        onEdit={handleEditReview} 
+      />
     </section>
   );
 };
