@@ -35,6 +35,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .card-header p {
@@ -54,6 +55,7 @@
     height: 170px; /* Adjust height to balance with title */
     object-fit: cover;
     flex-shrink: 0;
+    cursor: pointer;
 }
 
 .card-body {

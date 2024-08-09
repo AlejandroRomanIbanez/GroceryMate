@@ -88,17 +88,48 @@ export default function Checkout({ products, basket, setBasket }) {
     setState(prevState => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const allFieldsFilled = Object.values(address).every(field => field.trim() !== '') &&
       Object.values(payment).every(field => field.trim() !== '');
 
     if (allFieldsFilled) {
-      setBasket([]); // Clear the basket
-      navigate('/'); // Navigate to the home page
+      try {
+        // Perform the purchase
+        await completePurchase();
+
+        // Clear the basket
+        setBasket([]);
+
+        // Navigate to the home page
+        navigate('/');
+      } catch (error) {
+        console.error('Checkout failed:', error);
+      }
     } else {
       alert('Please fill all fields');
+    }
+  };
+
+  const completePurchase = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const purchasedProductIds = basket.map(item => item.product_id);
+      console.log('Purchased Product IDs:', purchasedProductIds);
+
+      await axios.post(
+        `${process.env.REACT_APP_BACKEND_SERVER}/api/me/purchase`,
+        { purchased_products: purchasedProductIds },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+    } catch (error) {
+      console.error('Failed to complete purchase:', error);
+      throw error;
     }
   };
 

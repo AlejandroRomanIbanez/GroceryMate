@@ -12,6 +12,7 @@ import Footer from './Component/Footer/Footer';
 import Checkout from './Component/Checkout/Checkout';
 import axios from 'axios';
 import ProtectedRoute from './Component/ProtectedRoute';
+import ProductDetail from './Component/ProductDetail/ProductDetail';
 
 
 
@@ -39,6 +40,7 @@ const AppContent = ({ products, isFav, basket, setBasket }) => {
             </ProtectedRoute>
           }
         />
+        <Route path="/product/:productId" element={<ProductDetail />} />
         <Route
           path="/checkout"
           element={
