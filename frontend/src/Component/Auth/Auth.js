@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { toast, Toaster } from 'react-hot-toast'; // Import react-hot-toast
 import './Auth.css';
 import logo from '../Assets/Frame2.png';
 
@@ -21,6 +22,7 @@ const Auth = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
+    toast.success('Logged out successfully.');
   };
 
   return (
@@ -51,6 +53,7 @@ const Auth = () => {
           <p>At MarketMate, we believe that shopping should be a breeze, not a chore. That's why we're dedicated to providing you with a personalized shopping experience that's tailored to your needs and preferences.</p>
         </div>
       </div>
+      <Toaster /> {/* Add the Toaster component to display toasts */}
     </div>
   );
 };
@@ -69,6 +72,7 @@ const LoginForm = ({ handleSwitch }) => {
       window.location.href = '/';
     } catch (error) {
       console.error(error.response.data);
+      toast.error('Invalid username or password');
     }
   };
 
@@ -95,8 +99,11 @@ const RegisterForm = ({ handleSwitch }) => {
       const response = await axios.post(`${process.env.REACT_APP_BACKEND_SERVER}/api/auth/register`, { username: name, email, password });
       console.log(response.data);
       handleSwitch();
+      toast.success('Registration successful. Please log in.');
     } catch (error) {
       console.error(error.response.data);
+      const errorMessage = error.response?.data?.error || 'Registration failed. Please try again.';
+      toast.error(errorMessage);
     }
   };
 

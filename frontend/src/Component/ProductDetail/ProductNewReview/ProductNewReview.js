@@ -97,13 +97,6 @@ const NewReview = ({ productId, reviews, onNewReview }) => {
         <div className="new-review-card">
           <div className="new-review-card-body">
             <div className="new-review-d-flex">
-              <img
-                className="new-review-rounded-circle new-review-shadow-1-strong new-review-me-3"
-                src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img%20(21).webp"
-                alt="avatar"
-                width="65"
-                height="65"
-              />
               <div className="new-review-w-100">
                 <h5>Add a comment</h5>
                 <div className="new-review-rating-stars">
