@@ -101,8 +101,8 @@ const RegisterForm = ({ handleSwitch }) => {
       handleSwitch();
       toast.success('Registration successful. Please log in.');
     } catch (error) {
-      console.error(error.response.data);
-      const errorMessage = error.response?.data?.error || 'Registration failed. Please try again.';
+      console.error(error);
+      const errorMessage = error?.response?.data?.error || 'Registration failed. Please try again.';
       toast.error(errorMessage);
     }
   };

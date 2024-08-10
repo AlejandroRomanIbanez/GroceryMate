@@ -1,5 +1,6 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import mongo
+from app.helpers import serialize_object_id
 
 
 def register_user(data):
@@ -22,7 +23,11 @@ def register_user(data):
     if mongo.grocery.users.find_one({'username': username}):
         return {'error': 'Username already exists'}, 400
 
-    mongo.grocery.users.insert_one({'email': email, 'username': username, 'password': password, 'basket': [], 'fav_products': []})
+    mongo.grocery.users.insert_one({'email': email,
+                                    'username': username,
+                                    'password': password,
+                                    'basket': [],
+                                    'fav_products': []})
     return {'message': 'User registered successfully'}, 201
 
 
@@ -43,6 +48,6 @@ def login_user(data):
 
     user = mongo.grocery.users.find_one({'email': email})
     if not user or not check_password_hash(user['password'], password):
-        return {'error': 'Invalid username or password'}, 401
+        return {'error': 'Invalid username or password'}
 
-    return user
+    return serialize_object_id(user)

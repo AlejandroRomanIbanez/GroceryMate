@@ -115,6 +115,7 @@ const ProductDetail = () => {
   }
 
   const averageRating = calculateAverageRating(productDetailItem.reviews);
+  console.log("Average Rating:", averageRating);
 
   return (
     <section className="productDetailContainer">
