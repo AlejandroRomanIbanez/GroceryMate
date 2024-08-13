@@ -23,7 +23,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
     if (!userAgeVerified) return;
 
     const fetchFavorites = async () => {
-      if (isFav) {
+      if (isFav && loading) {
         try {
           const token = localStorage.getItem('token');
           if (!token) return;

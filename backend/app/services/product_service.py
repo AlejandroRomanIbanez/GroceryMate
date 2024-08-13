@@ -55,6 +55,8 @@ def add_review_to_product(product_id: str, review_data: ReviewModel) -> Dict:
     if existing_review:
         return {"error": "User has already reviewed this product"}
 
+    review_dict['Content'] = ''
+
     result = products_collection.update_one(
         {"_id": ObjectId(product_id)},
         {"$push": {"reviews": review_dict}}

@@ -5,6 +5,7 @@ import CustomRating from './CustomRating/CustomRating'; // Custom rating compone
 import ProductComments from './ProductComments/ProductComments';
 import NewReview from './ProductNewReview/ProductNewReview';
 import './ProductDetail.css';
+import SkeletonDetail from '../Skeleton/SkeletonDetail';
 
 const ProductDetail = () => {
   const { productId } = useParams();
@@ -52,9 +53,13 @@ const ProductDetail = () => {
   }, [userPurchasedProducts, productDetailItem, productId]);
 
   const handleNewReview = (newReview) => {
+    const modifiedReview = {
+      ...newReview,
+      Comment: ""
+  };
     setProductDetailItem((prevItem) => ({
       ...prevItem,
-      reviews: [...prevItem.reviews, newReview],
+      reviews: [...prevItem.reviews, modifiedReview],
     }));
     setCanLeaveReview(false);
     setHasReviewed(true);
@@ -111,7 +116,7 @@ const ProductDetail = () => {
   };
 
   if (!productDetailItem) {
-    return <p>Loading...</p>;
+    return <SkeletonDetail />;
   }
 
   const averageRating = calculateAverageRating(productDetailItem.reviews);
