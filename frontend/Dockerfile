@@ -9,6 +9,7 @@ COPY frontend/build/ /usr/share/nginx/html/
 
 # Expose port 80
 EXPOSE 80
+EXPOSE 443
 
 # Command to run Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
