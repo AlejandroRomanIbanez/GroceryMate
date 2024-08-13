@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import img1 from "../Assets/dp-img1.png";
 import img2 from "../Assets/dp-img2.jpg";
 import img3 from "../Assets/dp-img3.jpg";
@@ -16,32 +17,29 @@ import { TypeAnimation } from 'react-type-animation';
 import "./DisplaySection.css";
 
 const DisplaySection = () => {
+    const navigate = useNavigate();  // Initialize useNavigate
+
+    const handleShopNowClick = () => {
+        navigate('/store');  // Navigate to /store
+    };
 
     return (
         <div className='container mx-auto mt-6'>
-
             <div className='flex flex-wrap gap-6'>
-
                 <div className='display-first-section relative flex-1'>
-
                     <img src={img8} className="absolute -z-10 w-full h-full object-cover" alt="" />
-
                     <div data-aos="fade-down" data-aos-duration="2000" className="absolute right-10 top-5">
                         <img src={cherry} alt="" />
                     </div>
-
                     <div data-aos="fade-right" data-aos-duration="2000" className="absolute right-[242px] bottom-[60px]">
                         <img src={tomato} alt="" />
                     </div>
-
                     <div data-aos="fade-left" data-aos-duration="2000" className="absolute right-10 bottom-7">
                         <img src={orange} alt="" />
                     </div>
-
                     <div className="absolute left-[-150px] bottom-[-180px]">
                         <img src={plate} className="rotate" alt="" />
                     </div>
-
                     <div className='content-sec-one'>
                         <h2>DELICIOUS</h2>
                         <h1>SALAD</h1>
@@ -52,30 +50,23 @@ const DisplaySection = () => {
                                 repeat={Infinity}
                             />
                         </h3>
-
                         <div className='shop-now-btn ml-16 md:ml-20 lg:ml-40'>
-                            <button>Shop Now</button>
-                            <MdDoubleArrow className='ml-1 ' />
+                            <button onClick={handleShopNowClick} className="cursor-pointer">Shop Now</button>
+                            <MdDoubleArrow className='ml-1 cursor-pointer' />
                         </div>
                     </div>
-                    
                     <img src={img1} className="w-full" alt="" />
                 </div>
-
                 <div className='grid gap-6 flex-1'>
-
                     <div className='relative'>
-
                         <div className='content-section-two'>
                             <h1>Fresh</h1>
                             <h2>Vegetables</h2>
-
                             <div className='shop-now-btn'>
-                                <button>Shop Now</button>
-                                <MdDoubleArrow className='ml-1 ' />
+                                <button onClick={handleShopNowClick} className="cursor-pointer">Shop Now</button>
+                                <MdDoubleArrow className='ml-1 cursor-pointer' />
                             </div>
                         </div>
-
                         <div className="hover05 column">
                             <div>
                                 <figure>
@@ -83,20 +74,16 @@ const DisplaySection = () => {
                                 </figure>
                             </div>
                         </div>
-
                     </div>
-
                     <div className='relative'>
-
                         <div className='content-section-three'>
                             <h1>Fresh</h1>
                             <h2>Week Frenzy</h2>
                             <div className='shop-now-btn'>
-                                <button>Shop Now</button>
-                                <MdDoubleArrow className='ml-1 ' />
+                                <button onClick={handleShopNowClick} className="cursor-pointer">Shop Now</button>
+                                <MdDoubleArrow className='ml-1 cursor-pointer' />
                             </div>
                         </div>
-
                         <div className="hover05 column">
                             <div>
                                 <figure>
@@ -105,13 +92,10 @@ const DisplaySection = () => {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-
             {/* Sub Section */}
             <div className='sub-section mt-10 flex flex-wrap justify-center gap-10'>
-
                 <div className='sub-section-cont flex items-center gap-4'>
                     <div className='main-section flex items-center gap-4'>
                         <img src={img4} className="w-24 h-24" alt="" />
@@ -121,7 +105,6 @@ const DisplaySection = () => {
                         </div>
                     </div>
                 </div>
-
                 <div className='sub-section-cont flex items-center gap-4'>
                     <div className='main-section flex items-center gap-4'>
                         <img src={img5} className="w-24 h-24" alt="" />
@@ -131,7 +114,6 @@ const DisplaySection = () => {
                         </div>
                     </div>
                 </div>
-
                 <div className='sub-section-cont flex items-center gap-4'>
                     <div className='main-section flex items-center gap-4'>
                         <img src={img6} className="w-20 h-20" alt="" />
@@ -141,7 +123,6 @@ const DisplaySection = () => {
                         </div>
                     </div>
                 </div>
-
                 <div className='sub-section-cont flex items-center gap-4'>
                     <div className='main-section flex items-center gap-4'>
                         <img src={img7} className="w-30 h-16" alt="" />
@@ -152,9 +133,7 @@ const DisplaySection = () => {
                     </div>
                 </div>
             </div>
-
             <hr className='mt-8' />
-
         </div>
     );
 };

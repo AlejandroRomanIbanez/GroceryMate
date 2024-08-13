@@ -6,37 +6,29 @@ import { useNavigate } from 'react-router-dom';
 import notfound from '../../Assets/no-product-found.png';
 import ProductGridSkeleton from '../../Skeleton/ProductGridSkeleton';
 import { toast, Toaster } from 'react-hot-toast';
-import AgeVerificationModal from '../../AgeVerification/AgeVerificationModal'; // Import the modal component
 
 const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, resetPage }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [favProductIds, setFavProductIds] = useState([]);
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(true);
-  const [userAgeVerified, setUserAgeVerified] = useState(sessionStorage.getItem('userAgeVerified') === 'true');
-  const [underage, setUnderage] = useState(sessionStorage.getItem('underage') === 'true');
   const navigate = useNavigate();
 
   const productsPerPage = 12;
 
   useEffect(() => {
-    if (!userAgeVerified) return;
-
     const fetchFavorites = async () => {
-      if (isFav) {
-        try {
-          const token = localStorage.getItem('token');
-          if (!token) return;
-          const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          });
-          setFavProductIds(response.data.map(product => product._id));
-          setLoading(false);
-        } catch (error) {
-          console.error('Failed to fetch favorites:', error);
-        }
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setFavProductIds(response.data.map(product => product._id));
+      } catch (error) {
+        console.error('Failed to fetch favorites:', error);
       }
     };
 
@@ -57,17 +49,17 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
 
     fetchFavorites();
     fetchBasket();
-  }, [setBasket, userAgeVerified]);
+  }, [setBasket]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [resetPage]);
 
   useEffect(() => {
-    if (products.length > 0) {
+    if (products.length > 0 || !loading) {
       setLoading(false);
     }
-  }, [products]);
+  }, [products, favProductIds]);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -99,7 +91,6 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
         toast.error("Failed to remove from favorites.");
       }
     } else {
-      // Add to favorites
       try {
         const response = await axios.post(
           `${process.env.REACT_APP_BACKEND_SERVER}/api/me/favorites`,
@@ -166,52 +157,25 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
     navigate(`/product/${productId}`);
   };
 
-  // Filter products based on user age verification and underage status
-  const filteredProducts = (userAgeVerified && !underage) 
-    ? products 
-    : products.filter(product => !product.is_alcohol);
-
-  // Recalculate total pages based on filtered products
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  const handleAgeVerificationConfirm = (isOfAge) => {
-    if (isOfAge) {
-      setUserAgeVerified(true);
-      sessionStorage.setItem('userAgeVerified', 'true');
-      toast.success('You are of age. You can now view all products, even alcohol products.');
-    } else {
-      setUnderage(true);
-      sessionStorage.setItem('underage', 'true');
-      setUserAgeVerified(true);
-      sessionStorage.setItem('userAgeVerified', 'true');
-      toast.error('You are underage. You can still browse the site, but you will not be able to view alcohol products.');
-    }
-  };
+  const totalPages = Math.ceil(products.length / productsPerPage);
 
   return (
     <div className="container">
       <Toaster position="bottom-center" reverseOrder={false} />
-      {!userAgeVerified && (
-        <AgeVerificationModal
-          show={!userAgeVerified}
-          onClose={() => setUserAgeVerified(false)}
-          onConfirm={handleAgeVerificationConfirm}
-        />
-      )}
       <div className="product-grid">
         {loading ? (
           <ProductGridSkeleton />
         ) : currentProducts.length > 0 ? (
           currentProducts.map(product => (
             <div 
-            className="product-card"
-            key={product._id}
+              className="product-card"
+              key={product._id}
             >
-              <div className="card" >
+              <div className="card">
                 <div className="card-header" onClick={() => handleProductClick(product._id)}>
                   <p className="lead">{product.name}</p>
                 </div>
@@ -220,7 +184,7 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
                   alt={product.name}
                   className="card-img-top"
                   onClick={() => handleProductClick(product._id)}
-                  />
+                />
                 <div className="card-body">
                   <div className="content">
                     <p className="category">
@@ -273,17 +237,12 @@ const ProductGrid = ({ products, isFav, basket, setBasket, filterByCategory, res
               </div>
             </div>
           ))
-        ) : (!loading && (
+        ) : (!loading && products.length === 0 && (
           <div className="no-products-card">
             <div className="card">
               <div className="card-body">
                 <img src={notfound} alt="No products found" className="no-products-image" />
-                {underage && !isFav && products.length > 0 ?  (
-                  <>
-                    <h2>Underage Notice</h2>
-                    <p>You are underage and cannot view alcohol products. Please wait until you are 18 or older to access these products.</p>
-                  </>
-                ) : isFav && favProductIds.length === 0 ? (
+                {isFav && favProductIds.length === 0 ? (
                   <>
                     <h2>No favorite products found</h2>
                     <p>You don't have any favorite products yet, take a look into our products, you're going to love it.</p>

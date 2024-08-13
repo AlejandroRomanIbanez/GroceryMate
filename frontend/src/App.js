@@ -18,7 +18,9 @@ import ProductDetail from './Component/ProductDetail/ProductDetail';
 
 const AppContent = ({ products, isFav, basket, setBasket }) => {
   const location = useLocation();
-  const hideHeaderRoutes = ['/auth']; // Add any routes where you don't want to show the header
+  const hideHeaderRoutes = ['/auth'];
+
+  const filteredProducts = products.filter(product => !product.is_alcohol);
 
   return (
     <>
@@ -31,12 +33,12 @@ const AppContent = ({ products, isFav, basket, setBasket }) => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
-        <Route path="/store" element={<ProductStore products={products} isFav={false} basket={basket} setBasket={setBasket} />} />
+        <Route path="/store" element={<ProductStore products={filteredProducts} isFav={false} basket={basket} setBasket={setBasket} />} />
         <Route
           path="/store/favs"
           element={
             <ProtectedRoute>
-              <ProductStore products={products} isFav={true} basket={basket} setBasket={setBasket} />
+              <ProductStore products={filteredProducts} isFav={true} basket={basket} setBasket={setBasket} />
             </ProtectedRoute>
           }
         />
@@ -45,7 +47,7 @@ const AppContent = ({ products, isFav, basket, setBasket }) => {
           path="/checkout"
           element={
             <ProtectedRoute>
-              <Checkout products={products} basket={basket} setBasket={setBasket} />
+              <Checkout products={filteredProducts} basket={basket} setBasket={setBasket} />
             </ProtectedRoute>
           }
         />
